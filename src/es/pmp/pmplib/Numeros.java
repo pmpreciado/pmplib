@@ -6,6 +6,8 @@
 
 package es.pmp.pmplib;
 
+import java.math.BigDecimal;
+
 /**
  * Funciones de propósito general relacionadas con cadenas.
  * 
@@ -259,5 +261,182 @@ public class Numeros {
         return false;
     }
 
+    
+
+    /**
+     * Redondea un número entero.
+     * A la hora de hacer el redondeo, tiene en cuenta si el número es positivo o negativo.
+     *
+     * Ejemplos:
+     *     redondearEntero(15118, 0) = 15118
+     *     redondearEntero(15118, 1) = 15120
+     *     redondearEntero(15118, 2) = 15100
+     *     redondearEntero(15555, 1) = 15560
+     *     redondearEntero(-15118, 2) = -15500
+     *
+     * @param valor                             Valor a redondear
+     * @param digitos                           Número de dígitos a redondear
+     * 
+     * @return                                  Valor redondeado
+     */
+    public static int redondearEntero(int valor, int digitos) {
+        float f_valor = (float) valor;
+        float divisor = (float) Math.pow((double) 10, digitos);
+
+        f_valor = f_valor / divisor;
+        int nuevo_valor = Math.round(f_valor);
+        return nuevo_valor;
+    }
+
+
+    /**
+     * Redondea un número entero.
+     * A la hora de hacer el redondeo, tiene en cuenta si el número es positivo o negativo.
+     *
+     * Ejemplos:
+     *     redondearEntero(15118, 0) = 15118
+     *     redondearEntero(15118, 1) = 15120
+     *     redondearEntero(15118, 2) = 15100
+     *     redondearEntero(15555, 1) = 15560
+     *     redondearEntero(-15118, 2) = -15500
+     *
+     * @param valor                             Valor a redondear
+     * @param digitos                           Número de dígitos a redondear
+     * 
+     * @return                                  Valor redondeado
+     */
+    public static String redondearEntero(String valor, int digitos) {
+        int n_valor = Integer.parseInt(valor);
+        int r = redondearEntero(n_valor, digitos);
+        return Integer.toString(r);
+    }
+    
+    
+    /**
+     * Redondea un 'double' usando N posiciones decimales.
+     *
+     * @param valor                             Valor a redondear
+     * @param decimales                         Número de posiciones decimales
+     * 
+     * @return                                  String con el valor redondeado, usando dos posiciones decimales
+     */
+    public static String redondearNDecimales(double valor, int decimales)
+    {
+        BigDecimal bd = new BigDecimal(valor);
+        bd = bd.setScale(decimales, BigDecimal.ROUND_HALF_UP);
+
+        String result = bd.toString();
+        return result;
+    }
+
+
+    /**
+     * Redondea un 'BigDecimal' usando N posiciones decimales.
+     *
+     * @param valor                             Valor a redondear
+     * @param decimales                         Número de posiciones decimales
+     * 
+     * @return                                  String con el valor redondeado, usando dos posiciones decimales
+     */
+    public static String redondearNDecimales(BigDecimal valor, int decimales)
+    {
+        valor = valor.setScale(decimales, BigDecimal.ROUND_HALF_UP);
+
+        String result = valor.toPlainString();
+        return result;
+    }
+
+
+    /**
+     * Redondea un 'String' usando N posiciones decimales.
+     *
+     * @param valor                             Valor a redondear
+     * @param decimales                         Número de posiciones decimales
+     * 
+     * @return                                  String con el valor redondeado, usando dos posiciones decimales
+     */
+    public static String redondearNDecimales(String valor, int decimales)
+    {
+        BigDecimal bd_valor = new BigDecimal(valor);
+        String result = redondearNDecimales(bd_valor, decimales);
+        return result;
+    }
+
+    
+
+    /**
+     * Formatea un importe en formato seeeee.dd (s = signo opcional, e = parte entera, d = parte decimal)
+     * para su presentación en pantalla, usando separador de miles y coma decimal.
+     *
+     * @param importe                           Importe en formato seeeee.dd
+     * @param decimales                         Número de decimales a utilizar
+     * 
+     * @return                                  String con el importe en formato seee.eee,dd
+     */
+    public static String formatearImporte(String importe, int decimales) {
+
+        importe = redondearNDecimales(importe, decimales);
+
+
+        // Desmenuzamos el importe en: signo + parte_entera + parte_decimal
+        String signo = Cadenas.miSubstringLong(importe, 0, 1);
+        if (signo.equals("-")) {
+            importe = importe.substring(1);
+        } else {
+            signo = "";
+        }
+
+        String parte_entera = "";
+        String parte_decimal = "";
+
+        int punto = importe.indexOf(",");
+        if (punto == -1) punto = importe.indexOf(".");
+
+
+        if (punto == -1) {
+            // No hay decimales en el número de entrada
+            parte_entera = importe;
+        } else {
+            // Hay decimales en el número de entrada
+            parte_entera = importe.substring(0, punto);
+            parte_decimal = importe.substring(punto + 1, importe.length());
+        }
+
+        // Si hay más decimales de la cuenta, los redondeamos
+        if (parte_decimal.length() > decimales) parte_decimal = redondearEntero(parte_decimal, decimales);
+
+        // Añadimos tantos ceros a los decimales como se requiera
+        while (parte_decimal.length() < decimales) parte_decimal = parte_decimal + "0";
+
+        // Separamos por puntos la parte entera
+        String parte_entera_sep = "";
+        for (int i = 0; i < parte_entera.length(); i++) {
+            String c = Cadenas.miSubstringLong(parte_entera, parte_entera.length() - i - 1, 1);
+            if (i > 0 && i % 3 == 0) parte_entera_sep = "." + parte_entera_sep;
+            parte_entera_sep = c + parte_entera_sep;
+        }
+
+        // Componemos y retornamos el número formateado
+        String nuevo_importe;
+        if (decimales > 0) nuevo_importe = signo + parte_entera_sep + "," + parte_decimal;
+        else nuevo_importe = signo + parte_entera_sep;
+
+        return nuevo_importe;
+    }
+
+
+    /**
+     * Formatea un importe en formato seeeee.dd (s = signo opcional, e = parte entera, d = parte decimal)
+     * para su presentación en pantalla, usando separador de miles y coma decimal.
+     *
+     * @param importe                           Importe
+     * @param decimales                         Número de decimales a utilizar
+     * 
+     * @return                                  String con el importe en formato seee.eee,dd
+     */
+    public static String formatearImporte(BigDecimal importe, int decimales) {
+        String s_importe = importe.toString();
+        return formatearImporte(s_importe, decimales);
+    }
 }
 
