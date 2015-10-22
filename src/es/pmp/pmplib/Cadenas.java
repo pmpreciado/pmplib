@@ -18,9 +18,6 @@ import java.util.List;
  */
 public class Cadenas {
 
-    /** Nueva línea */
-    public static final String NL = System.getProperty("line.separator");
-
     /** Tabulaciones */
     public static final String TAB_1 = "    ";
     public static final String TAB_2 = TAB_1 + TAB_1;

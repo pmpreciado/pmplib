@@ -144,14 +144,16 @@ public class Arrays {
     /**
      * Transforma un List con elementos de tipo Integer, en un int [].
      *
-     * @param l_int                         List con los int
-     * @return                              int [] con los elementos del List original
-     *                                      'null' si la lista original era 'null'
+     * @param l_int                             Lista con los int
+     * @return                                  int [] con los elementos del List original
+     *                                          'null' si la lista original era 'null'
      */
     public static int [] list2Int(List <Integer> l_int) {
 
-        if (l_int == null) return null;
-
+        if (l_int == null) {
+            return null;
+        }
+        
         int [] result = new int[l_int.size()];
         for (int i = 0; i < l_int.size(); i++) {
             result[i] = l_int.get(i);
@@ -164,20 +166,23 @@ public class Arrays {
     /**
      * Transforma una lista con elementos de tipo String, en un String [].
      *
-     * @param l_string                      ArrayList con los String
-     * @return                              String [] con los elementos del List original
-     *                                      'null' si la lista original era 'null'
+     * @param l_string                          Lista con los String
+     * @return                                  String [] con los elementos del List original
+     *                                          'null' si la lista original era 'null'
      */
     public static String [] list2String(List <String> l_string) {
 
-        if (l_string == null) return null;
-
-        String [] result = new String[l_string.size()];
-        for (int i = 0; i < l_string.size(); i++) {
-            result[i] = l_string.get(i);
+        if (l_string == null) {
+            return null;
         }
 
-        return result;
+        // Alternativa solo para Java 8
+        // String [] arr = l_string.stream().toArray(String[]::new);
+        
+        String [] arr = new String[l_string.size()];
+        arr = l_string.toArray(arr);
+
+        return arr;
     }
 
     
@@ -525,7 +530,7 @@ public class Arrays {
             s.append(i + ": ");
             if (o == null) s.append("null");
             else s.append(o.toString());
-            s.append(Cadenas.NL);
+            s.append(Comun.NL);
         }
         
         return s.toString();
@@ -555,7 +560,7 @@ public class Arrays {
                     else s.append(o.toString());
                 }
             }
-            s.append(Cadenas.NL);
+            s.append(Comun.NL);
         }
         
         return s.toString();
