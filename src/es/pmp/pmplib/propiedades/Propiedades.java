@@ -13,7 +13,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
@@ -230,21 +229,21 @@ public class Propiedades {
             
             String posible_mensaje_error = Errores.getMensajeError(Errores.ERR_AP_FICH_PROPIEDADES_NO_ENCONTRADO, ruta_fichero);
             if (es_ruta_classpath) {
-            
-                InputStream is = getClass().getClassLoader().getResourceAsStream(ruta_fichero);
-                if (is == null) {
-                    throw new Exception(posible_mensaje_error);
-                }
+                try (InputStream is = getClass().getClassLoader().getResourceAsStream(ruta_fichero)) {
+                    if (is == null) {
+                        throw new Exception(posible_mensaje_error);
+                    }
 
-                properties.load(is);
-                is.close();
-            } else {
-                FileInputStream fis = new FileInputStream(ruta_fichero);
-                if (fis == null) {
-                    throw new Exception(posible_mensaje_error);
+                    properties.load(is);
                 }
-                properties.load(fis);
-                fis.close();
+                
+            } else {
+                try (FileInputStream fis = new FileInputStream(ruta_fichero)) {
+                    if (fis == null) {
+                        throw new Exception(posible_mensaje_error);
+                    }
+                    properties.load(fis);
+                }
             }
             
         } catch (IOException ioex) {

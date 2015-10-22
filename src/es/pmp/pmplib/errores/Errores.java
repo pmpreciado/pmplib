@@ -65,6 +65,9 @@ public class Errores {
     public static final String ERR_BD_INICIAR_TRANSACCION                               = "Error al iniciar una transacción";
     public static final String ERR_BD_COMMIT_TRANSACCION                                = "Error al hacer el commit de la transacción";
     public static final String ERR_BD_ROLLBACK_TRANSACCION                              = "Error al hacer el rollback de la transacción";
+    public static final String ERR_BD_OBTENER_SENTENCIA_RESULTSET                       = "Error al obtener la sentencia asociada al resultado";
+    public static final String ERR_BD_CERRAR_SENTENCIA                                  = "Error al cerrar la sentencia";
+    public static final String ERR_BD_CERRAR_RESULTADO                                  = "Error al cerrar el resultado";
     public static final String ERR_BD_DESCARGAR_DRIVER_JDBC                             = "Error al descargar el driver JDBC %0%";
     public static final String ERR_BD_DRIVER_JDBC_NO_DESCARGADO                         = "El driver JDBC %0% no ha podido ser descargado";    
     public static final String ERR_BD_POOL_NO_INICIALIZADO                              = "El pool de conexiones %0% no está inicializado";
