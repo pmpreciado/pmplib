@@ -58,6 +58,19 @@ public class Propiedades {
      */
     public Propiedades(String ruta_fichero, boolean es_ruta_classpath) {
         this();
+        setRutaFicheroPropiedades(ruta_fichero, es_ruta_classpath);
+    }
+    
+    
+    /**
+     * Permite especificar la ruta del fichero de propiedades.
+     * Se puede indicar una ruta del sistema de ficheros o una ruta del classpath de ejecución.
+     * 
+     * @param ruta_fichero                      Ruta del fichero de propiedades
+     * @param es_ruta_classpath                 Si es 'true', la ruta es relativa al classpath del proyecto, por ejemplo: "es/pmp/miproyecto/miproyecto.properties";
+     *                                          Si es 'false', es una ruta del sistema de ficheros, por ejemplo: "propiedades/miproyecto.properties
+     */
+    public void setRutaFicheroPropiedades(String ruta_fichero, boolean es_ruta_classpath) {
         this.ruta_fichero = ruta_fichero;
         this.es_ruta_classpath = es_ruta_classpath;
     }
@@ -81,6 +94,7 @@ public class Propiedades {
      */
     public String getPropiedad(String nombre_propiedad)
     {
+        checkFicheroPropiedadesCargado();
         String valor = properties.getProperty(nombre_propiedad);
         valor = Cadenas.trim(valor);
         return valor;
@@ -97,6 +111,7 @@ public class Propiedades {
      */
     public String getPropiedad(String nombre_propiedad, String valor_predeterminado)
     {
+        checkFicheroPropiedadesCargado();
         String valor = properties.getProperty(nombre_propiedad);
         valor = Cadenas.trim(valor);
         if (valor == null) valor = valor_predeterminado;
@@ -162,9 +177,11 @@ public class Propiedades {
      */
     public String getPropiedadOb(String nombre_propiedad, String ruta_fichero) throws Exception
     {
+        checkFicheroPropiedadesCargado();
+        
         String valor = properties.getProperty(nombre_propiedad);
         if (valor == null) {
-            String mensaje = Errores.getMensajeError(Errores.ERR_AP_FICH_PROPIEDADES_FALTA_PROPIEDAD, nombre_propiedad, ruta_fichero);
+            String mensaje = Errores.getMensaje(Errores.ERR_AP_FICH_PROPIEDADES_FALTA_PROPIEDAD, nombre_propiedad, ruta_fichero);
             throw new Exception(mensaje);
         }
         
@@ -220,14 +237,14 @@ public class Propiedades {
         
         try {
             if (Cadenas.vacio(ruta_fichero )) {
-                String mensaje = Errores.getMensajeError(Errores.ERR_AP_FICH_PROPIEDADES_NO_ESTABLECIDO);
+                String mensaje = Errores.getMensaje(Errores.ERR_AP_FICH_PROPIEDADES_NO_ESTABLECIDO);
                 throw new Exception(mensaje);
             }
             
             //ruta_fichero = FP_PREDETERMINADO_RUTA;
             //cnt.logger.info("Cargando fichero de propiedades " + ruta_fichero);
             
-            String posible_mensaje_error = Errores.getMensajeError(Errores.ERR_AP_FICH_PROPIEDADES_NO_ENCONTRADO, ruta_fichero);
+            String posible_mensaje_error = Errores.getMensaje(Errores.ERR_AP_FICH_PROPIEDADES_NO_ENCONTRADO, ruta_fichero);
             if (es_ruta_classpath) {
                 try (InputStream is = getClass().getClassLoader().getResourceAsStream(ruta_fichero)) {
                     if (is == null) {
@@ -247,8 +264,22 @@ public class Propiedades {
             }
             
         } catch (IOException ioex) {
-            String mensaje = Errores.getMensajeError(Errores.ERR_AP_LEER_FICH_PROPIEDADES, ruta_fichero);
+            String mensaje = Errores.getMensaje(Errores.ERR_AP_LEER_FICH_PROPIEDADES, ruta_fichero);
             throw new Exception(mensaje, ioex);
+        }
+    }
+    
+    
+    /**
+     * Comprueba que el fichero de propiedades haya sido cargado.
+     * Eleva una excepción de tipo runtime si no lo ha sido.
+     * 
+     @throws RuntimeException                   El fichero de propiedades no ha sido cargado
+     */
+    public void checkFicheroPropiedadesCargado() throws RuntimeException {
+        if (properties == null) {
+            String mensaje = Errores.getMensaje(Errores.ERR_AP_FICH_PROPIEDADES_NO_CARGADO);
+            throw new RuntimeException(mensaje);
         }
     }
     
@@ -257,9 +288,12 @@ public class Propiedades {
      * Comprueba la presencia de las propiedades consideradas obligatorias.
      * En caso de faltar alguna, genera una excepción con el mensaje de error correspondiente.
      * 
-     * @throws Exception                        Faltan propiedades en el fichero de propiedades
+     * @throws Exception                        El fichero de propiedades no ha sido cargado
+     *                                          Faltan propiedades en el fichero de propiedades
      */
     public void checkPropiedadesObligatorias() throws Exception {
+        
+        checkFicheroPropiedadesCargado();
         
         List <String> l_propiedades_no_encontradas = new ArrayList <> ();
                 l_propiedades_obligatorias.stream().mapToInt(x -> Integer.parseInt(x));
@@ -276,7 +310,7 @@ public class Propiedades {
         }
         
         StringBuilder s = new StringBuilder();
-        String mensaje = Errores.getMensajeError(Errores.ERR_AP_FICH_PROPIEDADES_FALTAN_PROPIEDADES, ruta_fichero);
+        String mensaje = Errores.getMensaje(Errores.ERR_AP_FICH_PROPIEDADES_FALTAN_PROPIEDADES, ruta_fichero);
         s.append(mensaje + Comun.NL);
         s.append("Propiedades no encontradas: " + Comun.NL);
         for (String p : l_propiedades_no_encontradas) {

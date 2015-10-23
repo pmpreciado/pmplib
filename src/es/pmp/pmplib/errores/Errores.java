@@ -30,6 +30,7 @@ public class Errores {
     public static final String ERR_AP_INTERNO_SERVIDOR                                  = "Error interno del servidor";
     public static final String ERR_AP_FICH_PROPIEDADES_NO_ESTABLECIDO                   = "No se ha establecido el nombre del fichero de propiedades";
     public static final String ERR_AP_FICH_PROPIEDADES_NO_ENCONTRADO                    = "No se encuentra el fichero de propiedades %0%";
+    public static final String ERR_AP_FICH_PROPIEDADES_NO_CARGADO                       = "El fichero de propiedades no ha sido cargado";
     public static final String ERR_AP_LEER_FICH_PROPIEDADES                             = "Error al leer el fichero de propiedades %0%";
     public static final String ERR_AP_FICH_PROPIEDADES_FALTA_PROPIEDAD                  = "Falta propiedad %0% en el el fichero de propiedades %1%";
     public static final String ERR_AP_FICH_PROPIEDADES_FALTAN_PROPIEDADES               = "Faltan propiedades en el el fichero de propiedades %0%";
@@ -76,37 +77,14 @@ public class Errores {
     public static final String ERR_BD_ACTUALIZAR_REGISTRO                               = "Error al actualizar el registro";
     public static final String ERR_BD_BORRAR_REGISTRO                                   = "Error al borrar el registro";
 
-
     
-//    /**
-//     * Obtiene el mensaje resultante de introducir el tag suministrado dentro del mensaje original.
-//     *
-//     * @param mensaje_original                  Mensaje original
-//     * @param tag                               Tag a incluir dentro del mensaje
-//     * 
-//     * @return                                  Mensaje con el tag
-//     */
-//    public static String getMensajeError(String mensaje_original, String tag)
-//    {
-//        String mensaje_tags = Cadenas.sustituirTagCadena(mensaje_original, tag);
-//        return mensaje_tags;
-//    }
-//    
-//    
-//    /**
-//     * Obtiene el mensaje resultante de introducir el tag suministrado dentro del mensaje original.
-//     *
-//     * @param mensaje_original                  Mensaje original
-//     * @param tag                               Tag a incluir dentro del mensaje
-//     * 
-//     * @return                                  Descripción del mensaje de error
-//     */
-//    public static String getMensajeError(String mensaje_original, int tag)
-//    {
-//        String s_tag = Integer.toString(tag);
-//        String mensaje_tags = getMensajeError(mensaje_original, s_tag);
-//        return mensaje_tags;
-//    }
+    //--------------------------------------------------------------------------
+    // ERRORES DE APLICACIONES WEB
+    //--------------------------------------------------------------------------
+    
+    public static final String ERR_WEBAPP_PAGINA_NO_EXISTENTE                           = "La página solicitada no existe";
+    
+
     
 
     /**
@@ -116,10 +94,10 @@ public class Errores {
      * 
      * @return                                  Descripción del mensaje de error
      */
-    public static String getMensajeError(String mensaje_original)
+    public static String getMensaje(String mensaje_original)
     {
         String tag = "";
-        String mensaje_tags = getMensajeError(mensaje_original, tag);
+        String mensaje_tags = Errores.getMensaje(mensaje_original, tag);
         return mensaje_tags;
     }
     
@@ -132,7 +110,7 @@ public class Errores {
      * 
      * @return                                  Descripción del mensaje de error
      */
-    public static String getMensajeError(String mensaje_original, String ... tags)
+    public static String getMensaje(String mensaje_original, String ... tags)
     {
         List <String> l_tags = new ArrayList();
         l_tags.addAll(Arrays.asList(tags));
@@ -149,14 +127,14 @@ public class Errores {
      * 
      * @return                                  Descripción del mensaje de error
      */
-    public static String getMensajeError(String mensaje_original, int ... tags)
+    public static String getMensaje(String mensaje_original, int ... tags)
     {
         String [] arr_s_tags = new String [tags.length];
         for (int i = 0; i < tags.length; i++) {
             String s_tag = Integer.toString(tags[i]);
             arr_s_tags[i] = s_tag;
         }
-        String mensaje_tags = getMensajeError(mensaje_original, arr_s_tags);
+        String mensaje_tags = Errores.getMensaje(mensaje_original, arr_s_tags);
         return mensaje_tags;
     }
 
@@ -169,7 +147,7 @@ public class Errores {
      * 
      * @return                                  Descripción del mensaje de error
      */
-    public static String getMensajeError(String mensaje_original, List <String> l_tags)
+    public static String getMensaje(String mensaje_original, List <String> l_tags)
     {
         String mensaje_tags = Cadenas.sustituirTagsCadena(mensaje_original, l_tags);
         return mensaje_tags;

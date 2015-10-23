@@ -132,7 +132,7 @@ public class PoolBoneCpManager {
         try {
             Class.forName(driver);
         } catch (ClassNotFoundException cnfex) {
-            String mensaje = Errores.getMensajeError(Errores.ERR_BD_DRIVER_NO_ENCONTRADO, driver);
+            String mensaje = Errores.getMensaje(Errores.ERR_BD_DRIVER_NO_ENCONTRADO, driver);
             throw new Exception(mensaje, cnfex);
         }
         
@@ -143,7 +143,7 @@ public class PoolBoneCpManager {
             // Probamos el pool
             conexion = pool.getConnection();
             if (conexion == null) {
-                String mensaje = Errores.getMensajeError(Errores.ERR_BD_ESTABLECER_CONEXION, info_conexion.getNombre());
+                String mensaje = Errores.getMensaje(Errores.ERR_BD_ESTABLECER_CONEXION, info_conexion.getNombre());
                 throw new Exception(mensaje);
             }
             
@@ -156,7 +156,7 @@ public class PoolBoneCpManager {
             conexion.close();
             
         } catch (SQLException sqlex) {
-            String mensaje = Errores.getMensajeError(Errores.ERR_BD_CONSULTA_BD, info_conexion.getNombre());
+            String mensaje = Errores.getMensaje(Errores.ERR_BD_CONSULTA_BD, info_conexion.getNombre());
             LogManager.getRootLogger().debug("SQL: " + sql_test);
             
             throw new Exception(mensaje, sqlex);
@@ -166,7 +166,7 @@ public class PoolBoneCpManager {
                 try {
                     conexion.close();
                 } catch (SQLException sqlex) {
-                    String mensaje = Errores.getMensajeError(Errores.ERR_BD_CERRAR_CONEXION, info_conexion.getNombre());
+                    String mensaje = Errores.getMensaje(Errores.ERR_BD_CERRAR_CONEXION, info_conexion.getNombre());
                     throw new Exception(mensaje, sqlex);
                 }
                 
@@ -193,14 +193,14 @@ public class PoolBoneCpManager {
         try {
             config = new BoneCPConfig();
         } catch (Throwable th) {
-            String mensaje = Errores.getMensajeError(Errores.ERR_BD_CREAR_POOL);
+            String mensaje = Errores.getMensaje(Errores.ERR_BD_CREAR_POOL);
             Exception ex = new Exception(mensaje, th);
             LogManager.getRootLogger().debug("No se puede crear el pool de base de datos. Posiblemente falte alguna dependencia (jar)");
             throw ex;
         }
         
         if (info_conexion.getTipo() == null) {
-            String mensaje = Errores.getMensajeError(Errores.ERR_BD_CREAR_POOL);
+            String mensaje = Errores.getMensaje(Errores.ERR_BD_CREAR_POOL);
             LogManager.getRootLogger().debug("Tipo de conexión no definido");
             throw new Exception(mensaje);
         }
@@ -283,13 +283,13 @@ public class PoolBoneCpManager {
                 try {
                     DriverManager.deregisterDriver(driver);
                 } catch (SQLException sqlex) {
-                    String mensaje = Errores.getMensajeError(Errores.ERR_BD_DESCARGAR_DRIVER_JDBC, nombre_driver);
+                    String mensaje = Errores.getMensaje(Errores.ERR_BD_DESCARGAR_DRIVER_JDBC, nombre_driver);
                     Exception ex = new Exception(mensaje, sqlex);
                     l_excepciones.add(ex);
                 }
                 
             } else {
-                String mensaje = Errores.getMensajeError(Errores.ERR_BD_DRIVER_JDBC_NO_DESCARGADO, nombre_driver);
+                String mensaje = Errores.getMensaje(Errores.ERR_BD_DRIVER_JDBC_NO_DESCARGADO, nombre_driver);
                 Exception ex = new Exception(mensaje);
                 l_excepciones.add(ex);
             }
@@ -333,7 +333,7 @@ public class PoolBoneCpManager {
         {
             c = pool.getConnection();
         } catch (SQLException sqlex) {
-            String mensaje = Errores.getMensajeError(Errores.ERR_BD_ESTABLECER_CONEXION);
+            String mensaje = Errores.getMensaje(Errores.ERR_BD_ESTABLECER_CONEXION);
             throw new Exception(mensaje, sqlex);
         }
         

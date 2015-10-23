@@ -43,7 +43,7 @@ public class DbCore {
      */
     private static void checkConexion(Connection conexion) throws Exception {
         if (conexion == null) {
-            String mensaje = Errores.getMensajeError(Errores.ERR_BD_CONEXION_NO_ESTABLECIDA);
+            String mensaje = Errores.getMensaje(Errores.ERR_BD_CONEXION_NO_ESTABLECIDA);
             throw new Exception(mensaje);
         }
     }
@@ -64,7 +64,7 @@ public class DbCore {
         try {
             conexion.setAutoCommit(nuevo_estado);
         } catch (SQLException sqlex) {
-            String mensaje = Errores.getMensajeError(Errores.ERR_BD_ACCESO_BD);
+            String mensaje = Errores.getMensaje(Errores.ERR_BD_ACCESO_BD);
             throw new Exception(mensaje, sqlex);
         }
     }
@@ -86,7 +86,7 @@ public class DbCore {
         try {
             return conexion.getAutoCommit();
         } catch (SQLException sqlex) {
-            String mensaje = Errores.getMensajeError(Errores.ERR_BD_ACCESO_BD);
+            String mensaje = Errores.getMensaje(Errores.ERR_BD_ACCESO_BD);
             throw new Exception(mensaje, sqlex);
         }
     }    
@@ -106,7 +106,7 @@ public class DbCore {
         try {
             conexion.commit();
         } catch (SQLException sqlex) {
-            String mensaje = Errores.getMensajeError(Errores.ERR_BD_ACCESO_BD);
+            String mensaje = Errores.getMensaje(Errores.ERR_BD_ACCESO_BD);
             throw new Exception(mensaje, sqlex);
         }
     }
@@ -225,7 +225,7 @@ public class DbCore {
                 try {
                     pst.setString(i + 1, "");
                 } catch (SQLException sqlex2) {
-                    mensaje = Errores.getMensajeError(Errores.ERR_BD_ACCESO_BD);
+                    mensaje = Errores.getMensaje(Errores.ERR_BD_ACCESO_BD);
                     Exception ex = new Exception(mensaje, sqlex2);
                     throw ex;   
                 }
@@ -250,7 +250,7 @@ public class DbCore {
             Statement st = rs.getStatement();
             return st;
         } catch (SQLException sqlex) {
-            String mensaje = Errores.getMensajeError(Errores.ERR_BD_OBTENER_SENTENCIA_RESULTSET);
+            String mensaje = Errores.getMensaje(Errores.ERR_BD_OBTENER_SENTENCIA_RESULTSET);
             Exception ex = new Exception(mensaje, sqlex);
             throw ex;
         }
@@ -275,7 +275,7 @@ public class DbCore {
         try {
             st.close();
         } catch (SQLException sqlex) {
-            String mensaje = Errores.getMensajeError(Errores.ERR_BD_CERRAR_SENTENCIA);
+            String mensaje = Errores.getMensaje(Errores.ERR_BD_CERRAR_SENTENCIA);
             Exception ex = new Exception(mensaje, sqlex);
             throw ex;
         }
@@ -298,7 +298,7 @@ public class DbCore {
         try {
             rs.close();
         } catch (SQLException sqlex) {
-            String mensaje = Errores.getMensajeError(Errores.ERR_BD_CERRAR_RESULTADO);
+            String mensaje = Errores.getMensaje(Errores.ERR_BD_CERRAR_RESULTADO);
             Exception ex = new Exception(mensaje, sqlex);
             throw ex;
 
@@ -325,7 +325,7 @@ public class DbCore {
             return pst;
             
         } catch (SQLException sqlex) {
-            String mensaje = Errores.getMensajeError(Errores.ERR_BD_PREPARAR_CONSULTA_SQL);
+            String mensaje = Errores.getMensaje(Errores.ERR_BD_PREPARAR_CONSULTA_SQL);
             mensaje += Comun.NL + "SQL: " + sql;
             Exception ex = new Exception(mensaje, sqlex);
             throw ex;
@@ -363,7 +363,7 @@ public class DbCore {
             rs = pst.executeQuery();
             
         } catch (Exception ex) {
-            String mensaje = Errores.getMensajeError(Errores.ERR_BD_PREPARAR_CONSULTA_SQL);
+            String mensaje = Errores.getMensaje(Errores.ERR_BD_PREPARAR_CONSULTA_SQL);
             mensaje += Comun.NL + "SQL: " + consulta;
             Exception ex2 = new Exception(mensaje, ex);
             throw ex2;
@@ -424,7 +424,7 @@ public class DbCore {
         } catch (Exception ex) {
             cerrarStatement(pst);
             
-            String mensaje = Errores.getMensajeError(Errores.ERR_BD_CONSULTA_SQL);
+            String mensaje = Errores.getMensaje(Errores.ERR_BD_CONSULTA_SQL);
             mensaje += Comun.NL + "SQL: " + consulta;
             Exception ex2 = new Exception(mensaje, ex);
             throw ex2;
