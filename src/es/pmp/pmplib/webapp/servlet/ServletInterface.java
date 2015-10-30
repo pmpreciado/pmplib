@@ -55,8 +55,10 @@ public interface ServletInterface {
     /**
      * Obtiene el contenido HTML de la página web, y lo vuelca a la salida HTTP.
      * Tras volcar el contenido, cierra el "stream" de salida.
+     * 
+     * @throws Throwable                        Error al enviar la salida de la página
      */
-    public void output();
+    public void output() throws Throwable;
     
     /**
      * Finaliza la ejecución del servlet, cerrando las conexiones a la base de datos.

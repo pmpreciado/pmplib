@@ -6,6 +6,8 @@
 
 package es.pmp.pmplib.html.base;
 
+import es.pmp.pmplib.Cadenas;
+
 /**
  * Clase para simplificar la generación de los atributos "style" para los elementos HTML.
  * @author pmpreciado
@@ -19,7 +21,7 @@ public class Style extends ListaAtributos {
     private final String SIMBOLO_IGUAL = ": ";
 
     /** Carácter Encerrador predeterminado para los argumentos */
-    private final String CARACTER_ENCERRADOR = "'";
+    private final String CARACTER_ENCERRADOR = "";
     
     
     /**
@@ -52,16 +54,29 @@ public class Style extends ListaAtributos {
      *                                          Por ejemplo: "font-size: 20px; text-color: blue; height: 20px; width: 100px;"
      */
     public void setStyle(String cadena_style) {
+        
+        if (cadena_style == null) {
+            return;
+        }
+        
         String [] elementos = cadena_style.split(SEPARADOR);
         for (String elemento : elementos) {
             String [] par = elemento.split(SIMBOLO_IGUAL);
             String etiqueta = par[0];
             
             if (par.length > 1) {
-                String valor = par[1];
-                super.add(etiqueta, valor);
+                String valor = Cadenas.trim(par[1]);
+                if (
+                        (valor.startsWith("'") && valor.endsWith("'")) ||
+                        (valor.startsWith("\"") && valor.endsWith("\""))
+                ) {
+                    valor = Cadenas.eliminarPrimeros(valor, 1);
+                    valor = Cadenas.eliminarUltimos(valor, 1);
+                }
+                
+                super.addAtributo(etiqueta, valor);
             } else {
-                super.add(etiqueta);
+                super.addAtributo(etiqueta);
             }
         }
     }
@@ -77,4 +92,5 @@ public class Style extends ListaAtributos {
         return cadena;
     }
     
+
 }

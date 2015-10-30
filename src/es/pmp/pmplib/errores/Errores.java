@@ -83,6 +83,10 @@ public class Errores {
     //--------------------------------------------------------------------------
     
     public static final String ERR_WEBAPP_PAGINA_NO_EXISTENTE                           = "La página solicitada no existe";
+    public static final String ERR_WEBAPP_CARGAR_PAGINA                                 = "Error al cargar la página";
+    public static final String ERR_WEBAPP_ENVIAR_SALIDA_PAGINA                          = "Error al enviar la salida de la página";
+    public static final String ERR_WEBAPP_CERRAR_SALIDA_PAGINA                          = "Error al cerrar la salida de la página";
+    public static final String ERR_WEBAPP_FINALIZAR_SERVLET                             = "Error al finalizar el servlet";
     
 
     

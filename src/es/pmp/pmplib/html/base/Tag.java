@@ -7,7 +7,7 @@
 package es.pmp.pmplib.html.base;
 
 import es.pmp.pmplib.Arrays;
-import es.pmp.pmplib.Cadenas;
+import es.pmp.pmplib.Comun;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,7 +25,7 @@ public class Tag extends ListaAtributos {
     private final String SEPARADOR = " ";
 
     /** Carácter usado como símbolo igual */
-    private final String SIMBOLO_IGUAL = ": ";
+    private final String SIMBOLO_IGUAL = "=";
 
     /** Carácter Encerrador predeterminado para los argumentos */
     private final String CARACTER_ENCERRADOR = "\"";
@@ -45,12 +45,10 @@ public class Tag extends ListaAtributos {
     /**
      * Contenido encerrado entre la etiquetas de apertura y la de cierre.
      * Es lo que va desde desde <tag> hasta </tag>.
-     * Solo hace falta indicarlo si se va a usar la función getBloque().
-     * El contenido puede ser una cadena (s_contenido) o bien otra etiqueta (contenido), excluyente entre sí.
+     * Solo hace falta indicarlo si se va a usar la función toStringBuilder().
+     * El contenido puede estar formado por texto, etiquetas Tag o ambos.
      */
-    String s_contenido;
-    Tag contenido;
-
+    List <Object> l_contenido;
 
 
     /**
@@ -60,14 +58,18 @@ public class Tag extends ListaAtributos {
         nombre = "";
         super.setSeparador(SEPARADOR);
         super.setSimboloIgual(SIMBOLO_IGUAL);
-        super.setCaracterEncerrador(CARACTER_ENCERRADOR);        
+        super.setCaracterEncerrador(CARACTER_ENCERRADOR);   
+        
+        tiene_cierre = true;
+        
+        l_contenido = new ArrayList <> ();
     }
 
 
     /**
      * Crea la instancia de la clase.
      *
-     * @param nombre                        Nombre de la etiqueta
+     * @param nombre                            Nombre de la etiqueta
      */
     public Tag(String nombre) {
         this();
@@ -76,9 +78,22 @@ public class Tag extends ListaAtributos {
 
 
     /**
+     * Crea la instancia de la clase.
+     *
+     * @param nombre                            Nombre de la etiqueta
+     * @param tiene_cierre                      Flag que indica que esta etiqueta tiene o no cierre
+     */
+    public Tag(String nombre, boolean tiene_cierre) {
+        this();
+        this.nombre = nombre;
+        this.tiene_cierre = tiene_cierre;
+    }
+    
+    
+    /**
      * Establece el nombre de la etiqueta.
      *
-     * @param nombre                        Nombre de la etiqueta
+     * @param nombre                            Nombre de la etiqueta
      */
     public void setNombre(String nombre) {
         this.nombre = nombre;
@@ -97,7 +112,7 @@ public class Tag extends ListaAtributos {
          * @param name                          Valor del atributo "name"
          */
         public void setName(String name) {
-            this.set("name", name);
+            this.setAtributo("name", name);
         }
 
         /**
@@ -106,7 +121,7 @@ public class Tag extends ListaAtributos {
          * @param id                            Valor del atributo "id"
          */
         public void setId(String id) {
-            this.set("id", id);
+            this.setAtributo("id", id);
         }
 
 
@@ -116,7 +131,7 @@ public class Tag extends ListaAtributos {
          * @param clase                         Valor del atributo "class"
          */
         public void setClass(String clase) {
-            this.set("class", clase);
+            this.setAtributo("class", clase);
         }
 
 
@@ -137,7 +152,7 @@ public class Tag extends ListaAtributos {
          * @param src                           Valor del atributo "src"
          */
         public void setSrc(String src) {
-            this.set("src", src);
+            this.setAtributo("src", src);
         }
 
 
@@ -147,7 +162,7 @@ public class Tag extends ListaAtributos {
          * @param title                         Valor del atributo "title"
          */
         public void setTitle(String title) {
-            this.set("title", title);
+            this.setAtributo("title", title);
         }
 
 
@@ -157,7 +172,7 @@ public class Tag extends ListaAtributos {
          * @param value                         Valor del atributo "value"
          */
         public void setValue(String value) {
-            this.set("value", value);
+            this.setAtributo("value", value);
         }
 
 
@@ -167,7 +182,7 @@ public class Tag extends ListaAtributos {
          * @param width                         Valor del atributo "width"
          */
         public void setWidth(String width) {
-            this.set("width", width);
+            this.setAtributo("width", width);
         }
 
 
@@ -177,7 +192,7 @@ public class Tag extends ListaAtributos {
          * @param height                        Valor del atributo "height"
          */
         public void setHeight(String height) {
-            this.set("height", height);
+            this.setAtributo("height", height);
         }
 
 
@@ -187,7 +202,7 @@ public class Tag extends ListaAtributos {
          * @param size                          Valor del atributo "size"
          */
         public void setSize(String size) {
-            this.set("size", size);
+            this.setAtributo("size", size);
         }
 
 
@@ -197,7 +212,7 @@ public class Tag extends ListaAtributos {
          * @param maxlength                     Valor del atributo "maxlength"
          */
         public void setMaxlength(String maxlength) {
-            this.set("maxlength", maxlength);
+            this.setAtributo("maxlength", maxlength);
         }
 
 
@@ -205,7 +220,7 @@ public class Tag extends ListaAtributos {
          * Establece el atributo "readonly".
          */
         public void setReadonly() {
-            this.set("readonly");
+            this.setAtributo("readonly");
         }
 
 
@@ -213,7 +228,7 @@ public class Tag extends ListaAtributos {
          * Establece el atributo "disabled".
          */
         public void setDisabled() {
-            this.set("disabled");
+            this.setAtributo("disabled");
         }
 
 
@@ -227,62 +242,118 @@ public class Tag extends ListaAtributos {
      * Establece el flag que indica que esta etiqueta tiene o no cierre.
      * Si no tiene cierre, en la apertura se incluirá un "/" al final.
      *
-     * @param tiene_cierre                  Flag que indica que esta etiqueta tiene o no cierre
+     * @param tiene_cierre                      Flag que indica que esta etiqueta tiene o no cierre
      */
     public void setTieneCierre(boolean tiene_cierre) {
         this.tiene_cierre = tiene_cierre;
     }
 
+    
+    /**
+     * Obtiene el flag que indica que esta etiqueta tiene o no cierre.
+     *
+     * @return                                  'true' si la etiqueta tiene cierre
+     *                                          'false' si no lo tiene
+     */
+    public boolean tieneCierre() {
+        return tiene_cierre;
+    }
+    
 
     /**
-     * Establece el s_contenido encerrado entre la etiquetas de apertura y la de cierre.
+     * Establece el contenido encerrado entre la etiquetas de apertura y la de cierre.
      * Es lo que va desde desde <tag> hasta </tag>.
-     * Solo hace falta indicarlo si se va a usar la función getBloque()
      *
-     * @param contenido                     Contenido encerrado entre la etiquetas de apertura y la de cierre
+     * @param contenido                         Contenido encerrado entre la etiquetas de apertura y la de cierre
      *
-     * @see getBloque()
+     * @see #toStringBuilder()
      */
     public void setContenido(Tag contenido) {
-        this.contenido = contenido;
-        this.s_contenido = null;
+        clearContenido();
+        this.l_contenido.add(contenido);
     }
 
 
     /**
-     * Establece el s_contenido encerrado entre la etiquetas de apertura y la de cierre.
+     * Establece el contenido encerrado entre la etiquetas de apertura y la de cierre.
      * Es lo que va desde desde <tag> hasta </tag>.
-     * Solo hace falta indicarlo si se va a usar la función getBloque()
      *
-     * @param s_contenido                   Contenido encerrado entre la etiquetas de apertura y la de cierre
+     * @param contenido                         Contenido encerrado entre la etiquetas de apertura y la de cierre
      *
-     * @see getBloque()
+     * @see #toStringBuilder()
      */
-    public void setContenido(String s_contenido) {
-        this.s_contenido = s_contenido;
-        this.contenido = null;
+    public void setContenido(String contenido) {
+        clearContenido();
+        this.l_contenido.add(contenido);
     }
 
 
     /**
-     * Establece el s_contenido encerrado entre la etiquetas de apertura y la de cierre.
+     * Establece el contenido encerrado entre la etiquetas de apertura y la de cierre.
      * Es lo que va desde desde <tag> hasta </tag>.
-     * Solo hace falta indicarlo si se va a usar la función getBloque()
      *
-     * @param s_contenido                   Contenido encerrado entre la etiquetas de apertura y la de cierre
+     * @param contenido                         Contenido encerrado entre la etiquetas de apertura y la de cierre
      *
-     * @see getBloque()
+     * @see #toStringBuilder()
      */
-    public void setContenido(StringBuilder s_contenido) {
-        setContenido(s_contenido.toString());
+    public void setContenido(StringBuilder contenido) {
+        clearContenido();
+        this.l_contenido.add(contenido);
     }
 
 
+    /**
+     * Añade contenido encerrado entre la etiquetas de apertura y la de cierre.
+     * Es lo que va desde desde <tag> hasta </tag>.
+     *
+     * @param contenido                         Contenido encerrado entre la etiquetas de apertura y la de cierre
+     *
+     * @see #toStringBuilder()
+     */
+    public void addContenido(Tag contenido) {
+        this.l_contenido.add(contenido);
+    }
+    
+    
+    /**
+     * Añade contenido encerrado entre la etiquetas de apertura y la de cierre.
+     * Es lo que va desde desde <tag> hasta </tag>.
+     *
+     * @param contenido                         Contenido encerrado entre la etiquetas de apertura y la de cierre
+     *
+     * @see #toStringBuilder()
+     */
+    public void addContenido(String contenido) {
+        this.l_contenido.add(contenido);
+    }
+    
+    
+    /**
+     * Añade contenido encerrado entre la etiquetas de apertura y la de cierre.
+     * Es lo que va desde desde <tag> hasta </tag>.
+     *
+     * @param contenido                         Contenido encerrado entre la etiquetas de apertura y la de cierre
+     *
+     * @see #toStringBuilder()
+     */
+    public void addContenido(StringBuilder contenido) {
+        this.l_contenido.add(contenido);
+    }
+    
+    
+    /**
+     * Elimina el contenido del tag.
+     */
+    public void clearContenido() {
+        l_contenido.clear();
+    }
+    
+    
     /**
      * Comprueba si se han definido atributos para esta etiqueta, sin incluir el estilo.
      *
-     * @return                              'true' si se han definido atributos para esta etiqueta
-     *                                      'false' en caso contrario
+     * @return                                  'true' si se han definido atributos para esta etiqueta
+     *                                          'false' en caso contrario
      */
     public boolean hayAtributos() {
         if (Arrays.size(l_atributos) > 0) return true;
@@ -294,14 +365,11 @@ public class Tag extends ListaAtributos {
     /**
      * Obtiene la cadena con la etiqueta HTML de apertura y los atributos.
      *
-     * @return                              Cadena HTML, por ejemplo:
-     *                                          <td class="titulo" style="font-size: 12px; background-color: red;">\n
+     * @return                                  Cadena HTML, por ejemplo:
+     *                                              <td class="titulo" style="font-size: 12px; background-color: red;">\n
      */
     public String getEtiquetaApertura() {
-        if (l_atributos.isEmpty()) {
-            return "";
-        }
-
+        
         StringBuilder s = new StringBuilder();
         s.append("<");
         s.append(nombre);
@@ -309,8 +377,8 @@ public class Tag extends ListaAtributos {
         String cadena_atributos = super.getCadenaAtributos();
         if (cadena_atributos.length() > 0) {
             s.append(" ");
+            s.append(cadena_atributos);
         }
-        s.append(cadena_atributos);
 
         if (!tiene_cierre) {
             s.append(" /");
@@ -324,12 +392,16 @@ public class Tag extends ListaAtributos {
 
     /**
      * Obtiene la cadena con la etiqueta HTML de cierre.
+     * Si la etiqueta no tiene cierre, retorna la cadena vacía.
      *
      * @return                              Cadena HTML, por ejemplo:
      *                                          </td>\n
      */
     public String getEtiquetaCierre() {
-        String s = "</" + nombre + ">\n";
+        String s = "";
+        if (tiene_cierre) {
+            s = "</" + nombre + ">";
+        }
         return s;
     }
 
@@ -344,30 +416,41 @@ public class Tag extends ListaAtributos {
      *
      * @see setContenido(String)
      */
-    public String getBloque() {
+    public StringBuilder toStringBuilder() {
 
         StringBuilder s = new StringBuilder();
 
         // Etiqueta de apertura
         s.append(getEtiquetaApertura());
-
+        s.append(Comun.NL);
+        
         // Contenido interno
-        if (contenido != null) {
-            s.append(contenido.getBloque());
-        } else if (s_contenido != null) {
-            s.append(s_contenido);
+        for (int i = 0; i < l_contenido.size(); i++) {
+            
+            Object contenido = (Object) l_contenido.get(i);
+            if (contenido instanceof Tag) {
+                Tag tag = (Tag) contenido;
+                s.append(tag.toStringBuilder());
+            } else if (contenido instanceof String) {
+                String s_contenido = (String) contenido;
+                s.append(s_contenido);
+            } else if (contenido instanceof StringBuilder) {
+                StringBuilder s_contenido = (StringBuilder) contenido;
+                s.append(s_contenido);
+            }
         }
+        
 
         // Etiqueta de cierre
         s.append(getEtiquetaCierre());
-
-        return s.toString();
+        s.append(Comun.NL);
+        
+        return s;
     }
 
 
     /**
      * Obtiene el bloque compuesto por la etiqueta de apertura, el s_contenido entre <tag> y </tag> y la etiqueta de cierre.
-     * Esta función es un alias de getBloque().
      *
      * @return                              Cadena compuesta por:
      *                                      <tag>
@@ -376,6 +459,6 @@ public class Tag extends ListaAtributos {
      */
     @Override
     public String toString() {
-        return getBloque();
+        return toStringBuilder().toString();
     }
 }

@@ -6,13 +6,12 @@
 
 package es.pmp.pmplib.webapp.servlet;
 
-import es.pmp.pmplib.Comun;
-import es.pmp.pmplib.html.componentes.Href;
-import es.pmp.pmplib.html.js.JsComun;
+import es.pmp.pmplib.errores.Errores;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -20,7 +19,17 @@ import javax.servlet.http.HttpSession;
 
 /**
  * Estructura base para un servlet encargado de generar una página HTML.
+ * 
+ * Al invocar una página web, se crea una instancia de esta clase, y, por este orden, se irán llamando a estos métodos:
+ * 
+ *      1. init(ServletContext, HttpServletRequest, HttpServletResponse)
+ *      2. preLaunch()
+ *      3. generateOutput()
+ *      4. output()
+ *      5. end()
  *
+ * Si hay que utilizar conexiones a BD, una buena opción es abrirlas en el método init(..) y cerrarlas en end()
+ * 
  * @author Pedro María Preciado
  */
 public abstract class ServletBase implements ServletInterface {
@@ -28,38 +37,38 @@ public abstract class ServletBase implements ServletInterface {
     public static final String DOCTYPE = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\"\n" +
                                    "\"http://www.w3.org/TR/html4/loose.dtd\">\n";
 
-    /** Tipos de contenido */
-    protected static final String CONTENT_TYPE_UTF_8            = "text/html;charset=UTF-8";
-    protected static final String CONTENT_TYPE_ISO_8859_1       = "text/html;charset=ISO-8859-1";
-    protected static final String CONTENT_TYPE_ISO_8859_15      = "text/html;charset=ISO-8859-15";
+    /** Algunos Content-Type comunes */
+    protected static final String CONTENT_TYPE_TEXT_HTML_UTF_8              = "text/html;charset=UTF-8";
+    protected static final String CONTENT_TYPE_TEXT_HTML_ISO_8859_1         = "text/html;charset=ISO-8859-1";
+    protected static final String CONTENT_TYPE_TEXT_HTML_ISO_8859_15        = "text/html;charset=ISO-8859-15";
+    protected static final String CONTENT_TYPE_IMAGE_JPEG                   = "image/jpeg;charset=ISO-8859-1";
+    protected static final String CONTENT_TYPE_PDF                          = "application/pdf;charset=ISO-8859-1";
+    protected static final String CONTENT_TYPE_PREDETERMINADO               = CONTENT_TYPE_TEXT_HTML_UTF_8;
 
-    protected static final String CONTENT_TYPE_PREDETERMINADO   = CONTENT_TYPE_UTF_8;
-
-    /** Tipos de salida de la página */
-    
-        /** Tipo de salida HTML. Las etiquetas Doctype, html, head y body se generarán automáticamente */
-        protected static final int TIPO_SALIDA_HTML    = 1;
-        
-        /** Tipo de salida plana. No se genera nada automáticamente */
-        protected static final int TIPO_SALIDA_PLANA   = 2;
-    
-    
+    /**
+     * Tipos de salida de la página.
+     * Si se establece un tipo de salida distinto del predeterminado, hay que cambiar el content-type de la página.
+     */
+    protected static final int TIPO_SALIDA_TEXTO_HTML       = 1;
+    protected static final int TIPO_SALIDA_BINARIO          = 2;
+    protected static final int TIPO_SALIDA_PREDETERMINADO   = TIPO_SALIDA_TEXTO_HTML;
     
     protected ServletContext sc;
     protected HttpServletRequest request;
     protected HttpServletResponse response;
     protected HttpSession session;
-    private PrintWriter out;
 
+    /** Content-type de la página */
+    private String content_type;
     
-    /** Contenido de la página */
-    private StringBuilder contenido;
-
-    /** Tipo de salida de la página (TIPO_SALIDA_xxx) */
+    /** Tipo de salida de la página (ServletBase.TIPO_SALIDA_xxx) */
     private int tipo_salida;
-    
-    /** Identificador del campo que recibirá el foco al cargar la página */
-    private String id_fld_focus;
+
+    /** Contenido de la página para las salidas de tipo texto/html */
+    private StringBuilder contenido_texto_html;
+
+    /** Contenido de la página para las salidas de tipo binario */
+    private byte [] contenido_binario;
 
     
     
@@ -67,29 +76,44 @@ public abstract class ServletBase implements ServletInterface {
      * Crea la instancia de la clase.
      */
     public ServletBase() {
-        contenido = new StringBuilder();
-        tipo_salida = TIPO_SALIDA_HTML;
+        content_type = CONTENT_TYPE_PREDETERMINADO;
+        tipo_salida = TIPO_SALIDA_PREDETERMINADO;
+        
+        contenido_texto_html = new StringBuilder();
+        contenido_binario = null;
     }
     
     
     /**
-     * Obtiene el "content type" a utilizar para el envío de la página generada.
-     * Esta función retorna siempre el CONTENT_TYPE_PREDETERMINADO.
-     * Si se desea utilizar otro "content type", hay que sobrecargar esta función para que retorne el deseado.
+     * Establece el "content type" a utilizar en la página generada.
+     * Si se desea, se puede utilizar alguna de las constantes ServletBase.CONTENT_TYPE_xxx
      *
-     * @return                              "Content type" a utilizar (CONTENT_TYPE_xxx)
-     *                                      Si es 'null', no se utilizará ninguno
+     * @param content_type                      "Content type" a utilizar
+     */
+    public void setContentType(String content_type) {
+        this.content_type = content_type;
+    }
+    
+    
+    
+    /**
+     * Obtiene el "content type" a utilizar en la página generada.
+     *
+     * @return                                  "Content type" a utilizar
      */
     @Override
     public String getContentType() {
-        return CONTENT_TYPE_PREDETERMINADO;
+        return content_type;
     }
 
     
     /**
      * Establece el tipo de salida para la página.
+     * Si se utiliza un tipo de salida distinto del predeterminado, también hay que cambiar el content-type de la página.
      * 
-     * @param tipo_salida                       Tipo de salida de la página (TIPO_SALIDA_xxx)
+     * @param tipo_salida                       Tipo de salida de la página (ServletBase.TIPO_SALIDA_xxx)
+     * 
+     * @see setContentType(String)
      */
     public void setTipoSalida(int tipo_salida) {
         this.tipo_salida = tipo_salida;
@@ -97,67 +121,109 @@ public abstract class ServletBase implements ServletInterface {
     
     
     /**
+     * Establece el tipo de salida para la página y el content type de la misma.
+     * 
+     * @param tipo_salida                       Tipo de salida de la página (ServletBase.TIPO_SALIDA_xxx)
+     * @param content_type                      "Content type" a utilizar
+     *                                          Si se desea, se puede utilizar alguna de las constantes ServletBase.CONTENT_TYPE_xxx
+     */
+    public void setTipoSalida(int tipo_salida, String content_type) {
+        setTipoSalida(tipo_salida);
+        setContentType(content_type);
+    }
+    
+    
+    /**
      * Obtiene el tipo de salida para la página.
      * 
-     * @return                                  Tipo de salida de la página (TIPO_SALIDA_xxx)
+     * @return                                  Tipo de salida de la página (ServletBase.TIPO_SALIDA_xxx)
      */
     public int getTipoSalida() {
         return tipo_salida;
     }
 
+
+
     
     /**
-     * Establece el identificador del campo que recibirá automáticamente el "focus" al cargar esta página.
-     *
-     * @param id_fld_focus                  Identificador del campo que recibirá automáticamente el "focus"
+     * Añade contenido de tipo texto/html al cuerpo de la página.
+     * 
+     * @param contenido                         Contenido a añadir
      */
-    protected void setFocus(String id_fld_focus) {
-        this.id_fld_focus = id_fld_focus;
+    protected void addContenido(String contenido) {
+        this.contenido_texto_html.append(contenido);
     }
 
-
+    
     /**
-     * Obtiene el identificador del campo que recibirá automáticamente el "focus" al cargar esta página.
-     *
-     * @return                              Identificador del campo que recibirá automáticamente el "focus"
+     * Añade contenido de tipo texto/html al cuerpo de la página.
+     * 
+     * @param contenido                         Contenido a añadir
      */
-    protected String getFocus() {
-        return this.id_fld_focus;
+    protected void addContenido(StringBuilder contenido) {
+        this.contenido_texto_html.append(contenido);
+    }
+
+    
+    /**
+     * Establece el contenido de tipo texto/html al cuerpo de la página, sustituyendo al contenido anterior, si lo hubiera.
+     * 
+     * @param contenido                         Contenido a añadir
+     */
+    protected void setContenido(String contenido) {
+        contenido_texto_html = new StringBuilder(contenido);
+    }
+
+    
+    /**
+     * Añade contenido de tipo texto/html al cuerpo de la página, sustituyendo al contenido anterior, si lo hubiera.
+     * 
+     * @param contenido                         Contenido a añadir
+     */
+    protected void setContenido(StringBuilder contenido) {
+        contenido_texto_html = new StringBuilder(contenido);
     }
     
     
     /**
-     * Añade una llamada JavaScript al documento actual para redireccionar la página.
-     *
-     * @param url                           Nueva dirección
+     * Elimina el contenido que se hubiera añadido a la salida del servlet.
      */
-    protected void redirect(String url) {
-        Href href = new Href(url);
-        redirect(href);
+    protected void clearContenido() {
+        contenido_texto_html = new StringBuilder();
+        contenido_binario = null;
     }
-
-
+    
+    
     /**
-     * Añade una llamada JavaScript al documento actual para redireccionar la página.
-     *
-     * @param href                          Nueva dirección
+     * Obtiene el contenido de tipo texto/html que haya sido añadido a la salida del servlet.
+     * 
+     * @return                                  Contenido de tipo texto/html
      */
-    protected void redirect(Href href) {
-        String js_redirect = JsComun.redireccionar(href.toString());
-        js_redirect = JsComun.scriptMe(js_redirect);
-        addContenido(js_redirect);
+    protected StringBuilder getContenido() {
+        return contenido_texto_html;
+    }
+    
+    
+    /**
+     * Obtiene el contenido de tipo binario que haya sido añadido a la salida del servlet.
+     * 
+     * @return                                  Contenido de tipo binario
+     */
+    protected byte [] getContenidoBinario() {
+        return contenido_binario;
     }
     
     
     /** 
      * Inicializa la clase.
      * Almacena localmente los objetos request y response.
-     * Establece la conexión con la base de datos.
+     * Esta función es un buen lugar para abrir las conexiones a la base de datos.
      * 
-     * @param sc                            Contexto del Servlet
-     * @param request                       Request
-     * @param response                      Response
-     * @throws Throwable                    No se puede obtener el stream de salida
+     * @param sc                                Contexto del Servlet
+     * @param request                           Request
+     * @param response                          Response
+     * 
+     * @throws Throwable                        No se puede obtener el stream de salida
      */
     @Override
     public void init(ServletContext sc, HttpServletRequest request, HttpServletResponse response) throws Throwable {
@@ -166,16 +232,6 @@ public abstract class ServletBase implements ServletInterface {
         this.session = request.getSession();
         this.request = request;
         this.response = response;
-        try {
-            String ct = getContentType();
-            if (ct != null) {
-                response.setContentType(ct);
-            }
-            out = response.getWriter();
-        } catch (IOException ex) {
-            throw new ServletException(ex);
-        }
-
         
 
         /*
@@ -240,31 +296,84 @@ public abstract class ServletBase implements ServletInterface {
     
 
     /**
-     * Obtiene el contenido HTML de la página web, y lo vuelca a la salida HTTP.
-     * Tras volcar el contenido, cierra el "stream" de salida.
+     * Obtiene el contenido_texto_html de tipo texto/html a retornar por el servlet y lo vuelca a la salida.
+     * Tras la operación, cierra el "stream" de salida.
+     * 
+     * @throws Exception                        Error al enviar la salida de la página
      */
-    @Override
-    public void output() {
+    private void outputTextoHtml() throws Exception {
+        PrintWriter out = null;
 
-        if (out == null) {
-            return;
+        try {
+            out = response.getWriter();
+            if (contenido_texto_html != null) {
+                out.print(contenido_texto_html);
+            }
+        } catch (IOException ioex) {
+            Exception ex = new Exception(Errores.getMensaje(Errores.ERR_WEBAPP_ENVIAR_SALIDA_PAGINA), ioex);
+            throw ex;
         }
 
-        // Obtenemos el código HTML
-        String html = this.toString();
-        out.print(html);
+        out.close();
+    }
+    
+    
+    /**
+     * Obtiene el contenido_texto_html binario a retornar por el servlet y lo vuelca a la salida.
+     * Tras la operación, cierra el "stream" de salida.
+     * 
+     * @throws Exception                        Error al enviar la salida de la página
+     *                                          Error al cerrar la salida de la página
+     */
+    private void outputBinario() throws Exception {
+        
+        ServletOutputStream sos = null;
+        try {
+            sos = response.getOutputStream();
+            if (contenido_binario != null) {
+                sos.write(contenido_binario);
+            }
+        } catch (IOException ioex) {
+            Exception ex = new Exception(Errores.getMensaje(Errores.ERR_WEBAPP_ENVIAR_SALIDA_PAGINA), ioex);
+            throw ex;
+        }
 
-        if (out != null) {
-            out.close();
+        if (sos != null) {
+            try {
+                sos.close();
+            } catch (IOException ioex) {
+                Exception ex = new Exception(Errores.getMensaje(Errores.ERR_WEBAPP_CERRAR_SALIDA_PAGINA), ioex);
+                throw ex;
+            }
         }
     }
     
     
     /**
-     * Finaliza la ejecución del servlet, devolviendo al pool las conexiones a la base de datos.
+     * Obtiene el contenido_texto_html a retornar, y lo vuelca a la salida del servlet.
+     * El contenido_texto_html puede ser texto/html o binario.
+     * Tras volcar el contenido_texto_html, cierra el "stream" de salida.
+     * 
+     * @throws Exception                        Error al enviar la salida de la página
+     */
+    @Override
+    public void output() throws Exception {
+        response.setContentType(content_type);
+        
+        if (tipo_salida == TIPO_SALIDA_TEXTO_HTML) {
+            outputTextoHtml();
+        } else if (tipo_salida == TIPO_SALIDA_BINARIO) {
+            outputBinario();
+        }
+    }
+    
+    
+    /**
+     * Finaliza la ejecución del servlet.
+     * Esta función es un buen lugar para cerrar y devolver al pool las conexiones a la base de datos.
      * Es obligatorio llamar este método al finalizar el servlet, por lo que es una buena idea hacer la llamada dentro del bloque "finally" de un try-catch.
      * 
-     * @throws ServletException             Error al cerrar la generar la salida
+     * @throws ServletException                 Error al cerrar la generar la salida
      */
     @Override
     public void end() throws ServletException {
@@ -281,111 +390,10 @@ public abstract class ServletBase implements ServletInterface {
         }
         */
             
-        this.contenido = null;
+        this.contenido_texto_html = null;
         this.sc = null;
         this.request = null;
         this.response = null;
     }
    
-
-    
-    /**
-     * Añade contenido al cuerpo de la página.
-     * 
-     * @param obj                               Componente a añadir
-     */
-    protected void addContenido(Object obj) {
-        String html = obj.toString();
-        contenido.append(html);
-    }
-    
-    
-    /**
-     * Establece el contenido del cuerpo de la página, sustituyendo el contenido anterior, si lo hubiera.
-     * 
-     * @param obj                               Componente a añadir
-     */
-    protected void setContenido(Object obj) {
-        String html = obj.toString();
-        contenido = new StringBuilder(html);
-    }
-    
-    /**
-     * Elimina el contenido que se hubiera añadido al cuerpo de la página.
-     */
-    protected void clearContenido() {
-        contenido = new StringBuilder();
-    }
-    
-    
-    /**
-     * Obtiene el contenido del cuerpo de la página.
-     * 
-     * @return                              Código HTML
-     */
-    protected StringBuilder getContenido() {
-        return contenido;
-    }
-    
-    
-    /**
-     * Retorna el contenido de la página web sin aplicar ningún estilo.
-     * 
-     * @return                                  Contenido estilo CajalnetLog
-     */
-    private StringBuilder getContenidoEstiloNormal() {
-        
-        StringBuilder s = new StringBuilder();
-        s.append(contenido);
-        return s;
-    }        
-    
-    
-    /**
-     * Genera el código HTML que invoca las funciones necesarias al cargar el body de la página.
-     *
-     * @return                                  Código HTML generado
-     */
-    private String getBodyOnload() {
-        String onload = "";
-        if (id_fld_focus != null) {
-            String js = JsComun.setFocus(id_fld_focus);
-            onload = " onload=\"" + js + "\"";
-        }
-        
-        return onload;
-    }
-    
-
-    /**
-     * Genera el código HTML de la página.
-     * 
-     * @return                              Código HTML de la página
-     */
-    @Override
-    public String toString() {
-
-        StringBuilder s = new StringBuilder();
-
-        if (tipo_salida == TIPO_SALIDA_PLANA) {
-            s.append(contenido);
-        } else {
-
-            s.append(DOCTYPE);
-
-            s.append("<html>\n");
-
-                // Body
-                String body_onload = getBodyOnload();
-                s.append("<body" + body_onload + ">" + Comun.NL);
-                    StringBuilder contenido_estilo_normal = getContenidoEstiloNormal();
-                    s.append(contenido_estilo_normal);
-                s.append("</body>\n");
-
-            s.append("</html>\n");
-        }
-        
-        return s.toString();
-    }
-
 }

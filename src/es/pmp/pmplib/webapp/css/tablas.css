@@ -1,0 +1,198 @@
+/************************************************************
+ * ESTILO ESTANDAR PARA LAS TABLAS
+ ************************************************************/
+
+/***************
+ * Estilo azul
+ ***************/
+
+ 
+table.azul_table
+{
+    font-family: tahoma, verdana, arial;
+    text-align: left;
+    border: 1px solid #21368B;
+    margin: 0px;
+    border-collapse: collapse;
+}
+
+
+/* Título */
+
+    tr.azul_tr_titulo
+    {
+        background-color: #21368B;
+        color: white;
+        font-size: 14px;
+        font-weight: bold;
+    }
+    
+    
+    td.azul_td_titulo {
+        padding: 4px;
+    }
+    
+    
+    td.azul_td_titulo_derecha
+    {
+        font-weight: normal;
+        font-style: italic;
+        text-align: right;
+        padding: 4px;
+    }
+
+
+/* Subtítulo */
+
+    tr.azul_tr_subtitulo
+    {
+        background-color: #21368B;
+        color: white;
+        font-size: 10pt;
+        font-weight: bold;
+        font-style: italic;
+    }
+    
+    td.azul_td_subtitulo
+    {
+        padding: 4px;
+    }
+
+
+/* Cabecera */
+
+    tr.azul_tr_cabecera
+    {
+        background-color: #6E85E5;
+        color: white;
+        font-size: 10pt;
+        font-weight: bold;
+    }
+    
+    td.azul_td_cabecera
+    {
+        padding: 2px 4px 2px 4px;
+        border-width: 0px 1px 1px 0px;
+        border-color: #B4BDE5;
+    }
+
+
+/* Sección */
+
+    tr.azul_tr_seccion
+    {
+        background-color: #FBE9CD;
+        color: #21368B;
+        font-size: 10pt;
+        font-weight: bold;
+    }
+    
+    td.azul_td_seccion
+    {
+        padding: 2px 4px 2px 4px;
+    }
+    
+    
+    td.azul_td_seccion_derecha
+        {
+        font-weight: normal;
+        font-style: italic;
+        text-align: right;
+        padding: 2px 4px 2px 4px;
+    }
+
+
+/* Separación */
+
+    tr.azul_tr_separacion
+    {
+        background-color: #FBB03F;
+        height: 2px;
+        padding: 0px;
+    }
+
+
+/* Datos */
+
+    tr.azul_tr_datos_impar
+    {
+        background-color: #FFFFFF;
+        color: #21368B;
+        font-size: 10pt;
+        font-weight: normal;
+    }
+    
+    
+    tr.azul_tr_datos_par
+    {
+        background-color: #E6F1F9;
+        color: #21368B;
+        font-size: 10pt;
+        font-weight: normal;
+    }
+    
+    
+    tr.azul_tr_datos_impar_resaltada
+    {
+        background-color: #FBF4E9;
+        color: #21368B;
+        font-size: 10pt;
+        font-weight: normal;
+    }
+    
+    
+    tr.azul_tr_datos_par_resaltada
+    {
+        background-color: #FBECD5;
+        color: #21368B;
+        font-size: 10pt;
+        font-weight: normal;
+    }
+    
+    td.azul_td_datos
+    {
+        padding: 2px 4px 2px 4px;
+    }
+
+
+/* Total */
+        
+    tr.azul_tr_total
+    {
+        background-color: #F3CDAA;
+        color: #21368B;
+        border-top: 3px double #21368B;
+        font-size: 10pt;
+        font-weight: bold;
+    }
+    
+    td.azul_td_total
+    {
+        padding: 2px 6px 2px 6px;
+    }
+
+
+/* Tabla vacía */
+    
+    tr.azul_tr_tabla_vacia
+    {
+        background-color: #F0F5F9;
+        color: #C11B00;
+        text-align: center;
+        font-size: 10pt;
+        font-weight: normal;
+        font-style: italic;
+    }
+
+    td.azul_td_tabla_vacia
+    {
+        padding: 12px 6px 12px 6px;
+    }
+
+
+/* Separación vertical */
+
+    td.azul_td_separacion_vertical { 
+        border-right: 2px solid #FFA350;
+    }
+

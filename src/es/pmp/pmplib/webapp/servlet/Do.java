@@ -112,7 +112,7 @@ public abstract class Do extends HttpServlet {
                 servlet = (ServletInterface) cons.newInstance(args);
                 servlet.init(sc, request, response);
             } catch (Throwable th) {
-                String mensaje = Errores.getMensaje(Errores.ERR_WEBAPP_PAGINA_NO_EXISTENTE);
+                String mensaje = Errores.getMensaje(Errores.ERR_WEBAPP_CARGAR_PAGINA);
                 throw new Exception(mensaje, th);
             }
         
@@ -130,7 +130,7 @@ public abstract class Do extends HttpServlet {
                 try {
                     servlet.end();
                 } catch (Throwable th) {
-                    logger.error("Error al finalizar el servlet", th);
+                    logger.error(Errores.getMensaje(Errores.ERR_WEBAPP_FINALIZAR_SERVLET), th);
                 }
             }
         }
@@ -173,7 +173,7 @@ public abstract class Do extends HttpServlet {
      */
     @Override
     public String getServletInfo() {
-        return "Short description";
+        return "Punto de entrada general a la aplicación web";
     }// </editor-fold>
 
 }
