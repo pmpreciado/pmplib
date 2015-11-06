@@ -52,6 +52,12 @@ public class CElementoInfo {
     Style style_td_explicacion;
 
     
+    /**
+     * Para elementos de tipo TE_TITULO y TE_SECCION.
+     * Testo a la derecha.
+     */
+    String texto_derecha;
+    
     /** 
      * Para elementos de tipo TE_DATO.
      * Flag que indica que el elemento no tiene valor. Sólo consta de una etiqueta que se expande al espacio del valor.
@@ -59,7 +65,7 @@ public class CElementoInfo {
     boolean etiqueta_expandida;
     
     /** 
-     * Para elementos de tipo TE_DATO.
+     * Para elementos de tipo TE_DATO, TE_HTML y TE_HUECO.
      * Flag que indica que el valor de este elemento se debe expandir hasta el final de la fila.
      */
     boolean expandir_hasta_final;
@@ -174,6 +180,36 @@ public class CElementoInfo {
         return explicacion;
     }
     
+    /**
+     * Comprueba si el elemento tiene explicación asociada.
+     * 
+     * @return                                  'true' si el elemento tiene explicación asociada
+     *                                          'false' si no la tiene
+     */
+    boolean hayExplicacion() {
+        return explicacion != null;
+    }
+    
+    /**
+     * Para elementos de tipo TE_TITULO y TE_SECCION.
+     * Establece el texto a la derecha.
+     * 
+     * @param texto_derecha                     Texto a la derecha
+     */
+    public void setTextoDerecha(String texto_derecha) {
+        this.texto_derecha = texto_derecha;
+    }
+            
+    /**
+     * Para elementos de tipo TE_TITULO, TE_SUBTITULO y TE_SECCION.
+     * Obtiene el texto a la derecha.
+     * 
+     * @return                                  Texto a la derecha
+     */
+    public String getTextoDerecha() {
+        return texto_derecha;
+    }
+            
     
     /**
      * Establece un estilo personalizado para el TD con la etiqueta.
@@ -258,6 +294,29 @@ public class CElementoInfo {
     }
     
     
+    /**
+     * Comprueba si este elemento es de un tipo que ocupa una fila entera.
+     * Los tipos de elemento que ocupan una fila entera son estos:
+     *      - TE_TITULO
+     *      - TE_SUBTITULO
+     *      - TE_SECCION
+     *      - TE_SEPARACION
+     * 
+     * @return                                  'true' si este elemento es de un tipo que ocupa una fila entera
+     *                                          'false' en caso contrario
+     */
+    public boolean esTipoFilaEntera() {
+        switch (tipo) {
+            case TE_TITULO:
+            case TE_SUBTITULO:
+            case TE_SECCION:
+            case TE_SEPARACION:
+                return true;
+        }
+        
+        return false;
+    }
+    
     
     /**
      * Obtiene una cadena con la información de la instancia.
@@ -268,10 +327,15 @@ public class CElementoInfo {
     public String toString() {
         StringBuilder s = new StringBuilder("");
         
+        s.append("tipo: " + tipo + Comun.NL);
         s.append("etiqueta: " + etiqueta + Comun.NL);
         s.append("valor: " + valor + Comun.NL);
         s.append("explicacion:" + explicacion + Comun.NL);
 
         return s.toString();
     }
+
+    
+
+
 }

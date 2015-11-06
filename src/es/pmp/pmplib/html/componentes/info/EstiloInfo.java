@@ -15,9 +15,12 @@ import es.pmp.pmplib.html.componentes.table.EstiloTabla;
  */
 public class EstiloInfo extends EstiloTabla {
     
-    public String clase_td_etiqueta;
-    public String clase_td_valor;
-    public String clase_td_explicacion;
+    public String clase_td_etiqueta_impar;
+    public String clase_td_etiqueta_par;
+    public String clase_td_valor_impar;
+    public String clase_td_valor_par;
+    public String clase_td_explicacion_impar;
+    public String clase_td_explicacion_par;
 
     
     /**
@@ -47,17 +50,24 @@ public class EstiloInfo extends EstiloTabla {
      */
     public void setEstilo(EstiloInfo estilo) {
         super.setEstilo(estilo);
-        this.clase_td_etiqueta                      = estilo.clase_td_etiqueta;
-        this.clase_td_valor                         = estilo.clase_td_valor;
-        this.clase_td_explicacion                   = estilo.clase_td_explicacion;
+        this.clase_td_etiqueta_impar                = estilo.clase_td_etiqueta_impar;
+        this.clase_td_etiqueta_par                  = estilo.clase_td_etiqueta_par;
+        this.clase_td_valor_impar                   = estilo.clase_td_valor_impar;
+        this.clase_td_valor_par                     = estilo.clase_td_valor_par;
+        this.clase_td_explicacion_impar             = estilo.clase_td_explicacion_impar;
+        this.clase_td_explicacion_par               = estilo.clase_td_explicacion_par;
     }
 
     
     public static EstiloInfo getEstiloInfoAzul() {
         EstiloInfo estilo_azul = new EstiloInfo();
-        estilo_azul.clase_td_etiqueta               = "azul_td_etiqueta";
-        estilo_azul.clase_td_valor                  = "azul_td_valor";
-        estilo_azul.clase_td_explicacion            = "azul_td_explicacion";
+        estilo_azul.clase_td_etiqueta_impar         = "azul_td_etiqueta_impar";
+        estilo_azul.clase_td_etiqueta_par           = "azul_td_etiqueta_par";
+        estilo_azul.clase_td_valor_impar            = "azul_td_valor_impar";
+        estilo_azul.clase_td_valor_par              = "azul_td_valor_par";
+        estilo_azul.clase_td_explicacion_impar      = "azul_td_explicacion_impar";
+        estilo_azul.clase_td_explicacion_par        = "azul_td_explicacion_par";
+        
         return estilo_azul;
     }
 

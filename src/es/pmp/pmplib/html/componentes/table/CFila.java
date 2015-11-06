@@ -172,7 +172,32 @@ public final class CFila extends ListaAtributos {
     }
 
     
-
+    /**
+     * Comprueba si el tipo de la fila se corresponde con un tipo que ocupa una fila entera.
+     * Los tipos que ocupan una fila entera son estos:
+     *      - TF_TITULO
+     *      - TF_SUBTITULO
+     *      - TF_SECCION
+     *      - TF_SEPARACION
+     *      - TF_HTML
+     * 
+     * @return                                  'true' si este elemento es de un tipo que ocupa una fila entera
+     *                                          'false' en caso contrario
+     */
+    public boolean esTipoFilaEntera() {
+        switch (tipo) {
+            case TF_TITULO:
+            case TF_SUBTITULO:
+            case TF_SECCION:
+            case TF_SEPARACION:
+            case TF_HTML:
+                return true;
+        }
+        
+        return false;
+    }
+    
+    
     /**
      * Añade una celda al final de la fila.
      * Si la fila estuviera vacía, crea una nueva fila insertando la celda.
@@ -593,14 +618,30 @@ public final class CFila extends ListaAtributos {
         
         Tag tag_tr = new Tag("tr");
         
+        String clase_tr = null;
+        String color_separacion_vertical = null;
+        
+        
+        switch (tipo) {
+            case CFila.TF_CABECERA:
+                clase_tr = table.estilo.clase_tr_cabecera;
+                color_separacion_vertical = table.estilo.separacion_vertical_color_cabecera;
+                break;
+                
+            case CFila.TF_DATOS:
+                clase_tr = getClaseFilaDatos(table.estilo, estilo_impar, resaltada);
+                color_separacion_vertical = table.estilo.separacion_vertical_color_datos;
+                break;
+                
+            case CFila.TF_TOTAL:
+                clase_tr = table.estilo.clase_tr_total;
+                color_separacion_vertical = table.estilo.separacion_vertical_color_total;
+                break;
+        }
+        
         ListaAtributos lista_atributos_generado = new ListaAtributos();
-        if (tipo == CFila.TF_CABECERA) {
-            lista_atributos_generado.setAtributoClass(table.estilo.clase_tr_cabecera);
-        } else if (tipo == CFila.TF_DATOS) {
-            String clase = getClaseFilaDatos(table.estilo, estilo_impar, resaltada);
-            lista_atributos_generado.setAtributoClass(clase);
-        } else if (tipo == CFila.TF_TOTAL) {
-            lista_atributos_generado.setAtributoClass(table.estilo.clase_tr_total);
+        if (clase_tr != null) {
+            lista_atributos_generado.setAtributoClass(clase_tr);
         }
         
         ListaAtributos lista_atributos_combinada = ListaAtributos.combinar(this, lista_atributos_generado, lista_atributos_heredados);
@@ -611,11 +652,15 @@ public final class CFila extends ListaAtributos {
             
             ListaAtributos lista_atributos_heredados_celda = new ListaAtributos();
             
-            if (table.haySeparacionVertical(i)) {
-                lista_atributos_heredados_celda.setAtributoClass(table.estilo.clase_td_separacion_vertical);
-            }
-            
             Style style_celda = new Style();
+            
+            if (table.haySeparacionVertical(i)) {
+                style_celda.addAtributo("border-right-width", table.estilo.separacion_vertical_ancho);
+                if (color_separacion_vertical != null) {
+                    style_celda.addAtributo("border-right-color", color_separacion_vertical);
+                }
+                style_celda.addAtributo("border-right-style", "solid");
+            }
             
             HtmlBase.ALINEACION alineacion = table.getAlineacionEfectivaColumna(i);
             if (alineacion != null) {
@@ -626,7 +671,9 @@ public final class CFila extends ListaAtributos {
                 lista_atributos_heredados_celda.setAtributo("colspan", celda.getExpandir());
             }
             
-            lista_atributos_heredados_celda.setAtributoStyle(style_celda);
+            if (!style_celda.vacio()) {
+                lista_atributos_heredados_celda.setAtributoStyle(style_celda);
+            }
             
             StringBuilder html_celda = celda.getHtml(table, tipo, lista_atributos_heredados_celda);
             tag_tr.addContenido(html_celda);
@@ -664,6 +711,7 @@ public final class CFila extends ListaAtributos {
         if (num_columnas > 1) {
             tag_td.setAtributo("colspan", num_columnas);
         }
+        tag_tr.addContenido(tag_td);
        
         return tag_tr.toStringBuilder();
     }

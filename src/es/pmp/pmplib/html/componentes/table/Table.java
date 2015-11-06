@@ -823,10 +823,12 @@ public class Table extends ListaAtributos {
             StringBuilder html_fila = fila.getHtml(this, lista_atributos_heredados, estilo_impar);
             html_filas.append(html_fila);
             
-            if (fila.tipo == CFila.TF_DATOS || fila.tipo == CFila.TF_HTML) {
-                estilo_impar = !estilo_impar;
-            } else {
-                estilo_impar = true;
+            if (fila.tipo != CFila.TF_SEPARACION) {
+                if (fila.tipo == CFila.TF_DATOS || fila.tipo == CFila.TF_HTML) {
+                    estilo_impar = !estilo_impar;
+                } else {
+                    estilo_impar = true;
+                }
             }
         }
         
@@ -901,7 +903,7 @@ public class Table extends ListaAtributos {
     
     /**
      * Obtiene el código HTML para mostrar la tabla.
-     * Esta función es un alias de toStringBuilder().
+     * Esta función es similar a toStringBuilder(). Sólo cambia el tipo de salida.
      *
      * @return                                  Código HTML de la tabla
      */

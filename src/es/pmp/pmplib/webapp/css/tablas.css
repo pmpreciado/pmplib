@@ -1,10 +1,10 @@
 /************************************************************
- * ESTILO ESTANDAR PARA LAS TABLAS
+ * ESTILO ESTANDAR PARA LAS TABLAS Y LOS CUADROS INFO
  ************************************************************/
 
-/***************
- * Estilo azul
- ***************/
+/*******************
+ * Estilo tabla azul
+ *******************/
 
  
 table.azul_table
@@ -194,5 +194,56 @@ table.azul_table
 
     td.azul_td_separacion_vertical { 
         border-right: 2px solid #FFA350;
+    }
+
+
+
+
+/*******************
+ * Estilo info azul
+ *******************/
+
+/* Etiqueta */
+
+    td.azul_td_etiqueta_impar
+    {
+      background-color: #EFF4F8;
+      color: #21368B;
+      font-size: 10pt;
+      padding: 1px 6px 1px 6px;
+
+    }
+
+
+    td.azul_td_etiqueta_par
+    {
+      background-color: #E1EEF9;
+      color: #21368B;
+      font-size: 10pt;
+      padding: 1px 6px 1px 6px;
+    }
+    
+    
+/* Dato */
+
+    td.azul_td_valor_impar,
+    td.azul_td_explicacion_impar
+    {
+      background-color: #FFFFFF;
+      color: #21368B;
+      font-size: 10pt;
+      font-weight: normal;
+      padding: 1px 6px 1px 6px;
+    }
+    
+
+    td.azul_td_valor_par,
+    td.azul_td_explicacion_par
+    {
+      background-color: #E6F1F9;
+      color: #21368B;
+      font-size: 10pt;
+      font-weight: normal;
+      padding: 1px 6px 1px 6px;
     }
 

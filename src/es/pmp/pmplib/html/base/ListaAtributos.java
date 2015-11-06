@@ -103,9 +103,10 @@ public class ListaAtributos {
          * @return                              Cadena
          */
         public String toString(String simbolo_igual, String caracter_encerrador) {
-            if (valor == null) {
+            if (valor == null || valor.length() == 0) {
                 return nombre;
             }
+            
             String cadena = nombre + simbolo_igual + caracter_encerrador + valor + caracter_encerrador;
             return cadena;
         }
@@ -551,7 +552,7 @@ public class ListaAtributos {
     /**
      * Función rápida para establecer el atributo "style".
      * 
-     * @param style                             Objeto con el  "style"
+     * @param style                             Objeto con el "style"
      */
     public void setAtributoStyle(Style style) {
         String s_style = style.toString();
@@ -569,6 +570,35 @@ public class ListaAtributos {
     }
     
 
+    /**
+     * Función rápida para establecer el atributo "style" a partir de un objeto de la clase Style dado.
+     * 
+     * @param style                             Estilo del objeto
+     */
+    public void setStyle(Style style) {
+        String s_style = style.getCadenaStyle();
+        setAtributoStyle(style);
+    }
+    
+    
+    /**
+     * Función rápida para obtener el "style" de dentro de un objeto de clase Style.
+     * El objeto Style se crea a partir del contenido del atributo "style", por lo que este debe estar definido.
+     * 
+     * @return                                  Estilo del objeto
+     *                                          'null' si el atributo style no está definido
+     */
+    public Style getStyle() {
+        String s_style = getAtributoStyle();
+        if (s_style == null) {
+            return null;
+        }
+        
+        Style style = new Style(s_style);
+        return style;
+    }
+    
+    
     /**
      * Comprueba si ha sido definido el atributo dado por su nombre.
      * El nombre es insensible a mayúsculas y minúsculas.
@@ -596,6 +626,17 @@ public class ListaAtributos {
      */
     public boolean existeAtributoData(String nombre) {
         return existeAtributo(PREFIJO_DATA + nombre);
+    }
+    
+    
+    /**
+     * Comprueba si la lista de atributos está vacía, es decir, si no hay ningún atributo asignado.
+     * 
+     * @return                                  'true' si la lista de atributos está vacía
+     *                                          'false' en caso contrario
+     */
+    public boolean vacia() {
+        return l_atributos.isEmpty();
     }
     
     
@@ -734,7 +775,9 @@ public class ListaAtributos {
 
         StringBuilder s = new StringBuilder();
         for (int i = 0; i < Arrays.size(l_atributos); i++) {
-            if (i > 0) s.append(separador);
+            if (i > 0) {
+                s.append(separador);
+            }
 
             CAtributo atributo = l_atributos.get(i);
             s.append(atributo.toString(simbolo_igual, caracter_encerrador));
@@ -793,9 +836,11 @@ public class ListaAtributos {
         for (int i = 0; i < la_secundarios.size(); i++) {
             
             CAtributo atributo_secundario = la_secundarios.get(i);
-            
-            if (!lista_atributos_combinada.existeAtributo(atributo_secundario.nombre)) {
 
+            if (!lista_atributos_combinada.existeAtributo(atributo_secundario.nombre)) {
+                lista_atributos_combinada.setAtributo(atributo_secundario);
+            } else {
+            
                 // El atributo "style" lo tratamos de forma específica
                 if (atributo_secundario.nombre.equalsIgnoreCase("style")) {
                     Style style_preferente = new Style(lista_atributos_preferente.getAtributoStyle());
