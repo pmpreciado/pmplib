@@ -27,7 +27,7 @@ public class EstiloInfo extends EstiloTabla {
      * Crea una instancia de la clase, y la inicializa con valores predeterminados.
      */
     public void EstiloInfo() {
-        EstiloInfo estilo_predeterminado = getEstiloInfoAzul();
+        EstiloInfo estilo_predeterminado = getEstiloPredeterminado();
         setEstilo(estilo_predeterminado);
     }
     
@@ -59,16 +59,21 @@ public class EstiloInfo extends EstiloTabla {
     }
 
     
-    public static EstiloInfo getEstiloInfoAzul() {
-        EstiloInfo estilo_azul = new EstiloInfo();
-        estilo_azul.clase_td_etiqueta_impar         = "azul_td_etiqueta_impar";
-        estilo_azul.clase_td_etiqueta_par           = "azul_td_etiqueta_par";
-        estilo_azul.clase_td_valor_impar            = "azul_td_valor_impar";
-        estilo_azul.clase_td_valor_par              = "azul_td_valor_par";
-        estilo_azul.clase_td_explicacion_impar      = "azul_td_explicacion_impar";
-        estilo_azul.clase_td_explicacion_par        = "azul_td_explicacion_par";
+    /**
+     * Crea un estilo por defecto.
+     * 
+     * @return                                  Clase con el estilo creado
+     */
+    public static EstiloInfo getEstiloPredeterminado() {
+        EstiloInfo estilo = new EstiloInfo();
+        estilo.clase_td_etiqueta_impar         = "info_td_etiqueta_impar";
+        estilo.clase_td_etiqueta_par           = "info_td_etiqueta_par";
+        estilo.clase_td_valor_impar            = "info_td_valor_impar";
+        estilo.clase_td_valor_par              = "info_td_valor_par";
+        estilo.clase_td_explicacion_impar      = "info_td_explicacion_impar";
+        estilo.clase_td_explicacion_par        = "info_td_explicacion_par";
         
-        return estilo_azul;
+        return estilo;
     }
 
 }

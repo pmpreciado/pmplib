@@ -7,6 +7,7 @@
 package es.pmp.pmplib.html.base;
 
 import es.pmp.pmplib.Arrays;
+import es.pmp.pmplib.Numeros;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,6 +40,7 @@ public class ListaAtributos {
     private static final String ATR_CLASS   = "class";
     private static final String ATR_NAME    = "name";
     private static final String ATR_STYLE   = "style";
+    private static final String ATR_VALUE   = "value";
     
     
 
@@ -103,7 +105,7 @@ public class ListaAtributos {
          * @return                              Cadena
          */
         public String toString(String simbolo_igual, String caracter_encerrador) {
-            if (valor == null || valor.length() == 0) {
+            if (valor == null) {
                 return nombre;
             }
             
@@ -252,7 +254,7 @@ public class ListaAtributos {
      * @param nombre                            Nombre del atributo
      */
     public void addAtributo(String nombre) {
-        addAtributo(nombre, "");
+        addAtributo(nombre, null);
     }
 
     
@@ -329,7 +331,7 @@ public class ListaAtributos {
      * @param nombre                            Nombre del atributo
      */
     public void addAtributoData(String nombre) {
-        addAtributo(PREFIJO_DATA + nombre, "");
+        addAtributo(PREFIJO_DATA + nombre, null);
     }
     
 
@@ -373,7 +375,7 @@ public class ListaAtributos {
      * @param nombre                            Nombre del atributo
      */
     public void addAtributoAlComienzo(String nombre) {
-        addAtributoAlComienzo(nombre, "");
+        addAtributoAlComienzo(nombre, null);
     }
     
     
@@ -419,7 +421,7 @@ public class ListaAtributos {
      */
     public void setAtributo(String nombre) {
         removeAtributo(nombre);
-        addAtributo(nombre, "");
+        addAtributo(nombre, null);
     }
     
     
@@ -483,9 +485,14 @@ public class ListaAtributos {
      * Función rápida para establecer el atributo "id".
      * 
      * @param valor                             Valor del atributo id
+     *                                          'null' para eliminar el atributo
      */
     public void setAtributoId(String valor) {
-        setAtributo(ATR_ID, valor);
+        if (valor == null) {
+            removeAtributo(ATR_ID);
+        } else {
+            setAtributo(ATR_ID, valor);
+        }
     }
     
     
@@ -497,15 +504,42 @@ public class ListaAtributos {
     public String getAtributoId() {
         return getValorAtributo(ATR_ID);
     }
+
+    
+    /**
+     * Función rápida para establecer el atributo "id".
+     * 
+     * @param valor                             Valor del atributo id
+     *                                          'null' para eliminar el atributo
+     */
+    public void setId(String valor) {
+        setAtributoId(valor);
+    }
+    
+    
+    /**
+     * Función rápida para obtener el atributo "id".
+     * 
+     * @return                                  Valor del atributo "id"
+     */
+    public String getId() {
+        String id = getAtributoId();
+        return id;
+    }
     
     
     /**
      * Función rápida para establecer el atributo "class".
      * 
      * @param valor                             Valor del atributo "class"
+     *                                          'null' para eliminar el atributo
      */
     public void setAtributoClass(String valor) {
-        setAtributo(ATR_CLASS, valor);
+        if (valor == null) {
+            removeAtributo(ATR_CLASS);
+        } else {
+            setAtributo(ATR_CLASS, valor);
+        }
     }
     
     
@@ -520,12 +554,29 @@ public class ListaAtributos {
     
     
     /**
+     * Función rápida para establecer el atributo "class".
+     * 
+     * @param valor                             Valor del atributo "class"
+     *                                          'null' para eliminar el atributo
+     */
+    public void setClass(String valor) {
+        setAtributoClass(valor);
+    }
+    
+    
+    
+    /**
      * Función rápida para establecer el atributo "name".
      * 
      * @param valor                             Valor del atributo "name"
+     *                                          'null' para eliminar el atributo
      */
     public void setAtributoName(String valor) {
-        setAtributo(ATR_NAME, valor);
+        if (valor == null) {
+            removeAtributo(ATR_NAME);
+        } else {
+            setAtributo(ATR_NAME, valor);
+        }
     }
     
     
@@ -540,23 +591,78 @@ public class ListaAtributos {
     
     
     /**
-     * Función rápida para establecer el atributo "style".
+     * Función rápida para establecer el atributo "name".
      * 
-     * @param valor                             Valor del atributo "style"
+     * @param valor                             Valor del atributo "name"
+     *                                          'null' para eliminar el atributo
      */
-    public void setAtributoStyle(String valor) {
-        setAtributo(ATR_STYLE, valor);
+    public void setName(String valor) {
+        if (valor != null) {
+            setAtributoName(valor);
+        }
+    }
+    
+    /**
+     * Función rápida para obtener el atributo "name".
+     * 
+     * @return                                  Valor del atributo "name"
+     */
+    public String getName() {
+        return getAtributoName();
     }
     
     
     /**
-     * Función rápida para establecer el atributo "style".
+     * Función rápida para establecer el atributo "value".
      * 
-     * @param style                             Objeto con el "style"
+     * @param valor                             Valor del atributo "value"
+     *                                          'null' para eliminar el atributo
      */
-    public void setAtributoStyle(Style style) {
-        String s_style = style.toString();
-        setAtributoStyle(s_style);
+    public void setAtributoValue(String valor) {
+        if (valor != null) {
+            setAtributo(ATR_VALUE, valor);
+        }
+    }
+    
+    
+    /**
+     * Función rápida para obtener el atributo "value".
+     * 
+     * @return                                  Valor del atributo "value"
+     */
+    public String getAtributoValue() {
+        return getValorAtributo(ATR_VALUE);
+    }
+    
+    /**
+     * Función rápida para establecer el atributo "value".
+     * 
+     * @param valor                             Valor del atributo "value"
+     *                                          'null' para eliminar el atributo
+     */
+    public void setValue(String valor) {
+        setAtributoValue(valor);
+    }
+    
+    
+    /**
+     * Función rápida para establecer el atributo "value".
+     * 
+     * @param valor                             Valor del atributo "value"
+     */
+    public void setValue(int valor) {
+        String s_valor = Integer.toString(valor);
+        setAtributoValue(s_valor);
+    }
+    
+    
+    /**
+     * Función rápida para obtener el atributo "value".
+     * 
+     * @return                                  Valor del atributo "value"
+     */
+    public String getValue() {
+        return getAtributoValue();
     }
     
     
@@ -569,14 +675,56 @@ public class ListaAtributos {
         return getValorAtributo(ATR_STYLE);
     }
     
-
+    
+    /**
+     * Función rápida para establecer el atributo "style" a partir de una cadena con el estilo.
+     * 
+     * @param style                             Estilo del objeto
+     *                                          'null' para eliminar el atributo
+     */
+    public void setAtributoStyle(String style) {
+        if (style == null) {
+            removeAtributo(ATR_STYLE);
+        } else {
+            setAtributo(ATR_STYLE, style);
+        }
+    }
+    
+    
     /**
      * Función rápida para establecer el atributo "style" a partir de un objeto de la clase Style dado.
      * 
      * @param style                             Estilo del objeto
+     *                                          'null' para eliminar el atributo
+     */
+    public void setAtributoStyle(Style style) {
+        
+        String s_style = null;
+        if (style != null) {
+            s_style = style.getCadenaAtributos();
+        }
+        setStyle(s_style);
+    }
+    
+    
+    /**
+     * Función rápida para establecer el atributo "style" a partir de una cadena con el estilo.
+     * 
+     * @param style                             Estilo del objeto
+     *                                          'null' para eliminar el atributo
+     */
+    public void setStyle(String style) {
+        setAtributoStyle(style);
+    }
+    
+    
+    /**
+     * Función rápida para establecer el atributo "style" a partir de un objeto de la clase Style dado.
+     * 
+     * @param style                             Estilo del objeto
+     *                                          'null' para eliminar el atributo
      */
     public void setStyle(Style style) {
-        String s_style = style.getCadenaStyle();
         setAtributoStyle(style);
     }
     
@@ -589,6 +737,7 @@ public class ListaAtributos {
      *                                          'null' si el atributo style no está definido
      */
     public Style getStyle() {
+        
         String s_style = getAtributoStyle();
         if (s_style == null) {
             return null;
@@ -692,6 +841,23 @@ public class ListaAtributos {
         return atributo.getValor();
     }
 
+    
+    /**
+     * Obtiene el valor de un atributo dado por su nombre.
+     * El valor es retornado como un entero.
+     * El nombre es insensible a mayúsculas y minúsculas.
+     *
+     * @param nombre                            Nombre del atributo
+     * 
+     * @return                                  Valor
+                                                0 si no existe el atributo
+     */
+    public int getValorAtributoInt(String nombre) {
+        int n = Numeros.toEntero(nombre, 0);
+        return n;
+    }
+    
+    
     /**
      * Obtiene el valor de un atributo dado por su nombre. Añade el prefijo DATA al atributo a obtener.
      * El nombre es insensible a mayúsculas y minúsculas.
@@ -780,7 +946,8 @@ public class ListaAtributos {
             }
 
             CAtributo atributo = l_atributos.get(i);
-            s.append(atributo.toString(simbolo_igual, caracter_encerrador));
+            String s_atributo = atributo.toString(simbolo_igual, caracter_encerrador);
+            s.append(s_atributo);
         }
 
         return s.toString();

@@ -99,30 +99,46 @@ public class Tag extends ListaAtributos {
         this.nombre = nombre;
     }
 
+    
+    
+    /**
+     * Crea un tag de tipo "table".
+     * 
+     * @return                                  Tag generado
+     */
+    public static Tag getTagTable() {
+        Tag tag = new Tag("table");
+        return tag;
+    }
+    
+    
+    /**
+     * Crea un tag de tipo "tr".
+     * 
+     * @return                                  Tag generado
+     */
+    public static Tag getTagTr() {
+        Tag tag = new Tag("tr");
+        return tag;
+    }
+    
+    
+    /**
+     * Crea un tag de tipo "td".
+     * 
+     * @return                                  Tag generado
+     */
+    public static Tag getTagTd() {
+        Tag tag = new Tag("td");
+        return tag;
+    }
+    
+    
 
 
     /***************************************************************************
      * ALGUNOS ATRIBUTOS COMUNES
      **************************************************************************/
-
-
-        /**
-         * Establece el atributo "name".
-         *
-         * @param name                          Valor del atributo "name"
-         */
-        public void setName(String name) {
-            this.setAtributo("name", name);
-        }
-
-        /**
-         * Establece el atributo "id".
-         *
-         * @param id                            Valor del atributo "id"
-         */
-        public void setId(String id) {
-            this.setAtributo("id", id);
-        }
 
 
         /**
@@ -261,84 +277,129 @@ public class Tag extends ListaAtributos {
     
 
     /**
-     * Establece el contenido encerrado entre la etiquetas de apertura y la de cierre.
+     * Establece el contenido del tag, que será colocado entre la etiquetas de apertura y la de cierre.
+     * Es lo que va desde desde <tag> hasta </tag>.
+     *
+     * @param tag                               Contenido encerrado entre la etiquetas de apertura y la de cierre
+     * 
+     * @return                                  El mismo objeto que se pasa por parámetro
+     */
+    public Tag setContenido(Tag tag) {
+        clearContenido();
+        this.l_contenido.add(tag);
+        return tag;
+    }
+
+
+    /**
+     * Establece el contenido del tag, que será colocado entre la etiquetas de apertura y la de cierre.
      * Es lo que va desde desde <tag> hasta </tag>.
      *
      * @param contenido                         Contenido encerrado entre la etiquetas de apertura y la de cierre
-     *
-     * @see #toStringBuilder()
+     * 
+     * @return                                  El mismo objeto que se pasa por parámetro
      */
-    public void setContenido(Tag contenido) {
+    public String setContenido(String contenido) {
         clearContenido();
         this.l_contenido.add(contenido);
+        return contenido;
     }
 
 
     /**
-     * Establece el contenido encerrado entre la etiquetas de apertura y la de cierre.
-     * Es lo que va desde desde <tag> hasta </tag>.
+     * Establece el contenido del tag, que será colocado entre la etiquetas de apertura y la de cierre.
      *
      * @param contenido                         Contenido encerrado entre la etiquetas de apertura y la de cierre
-     *
-     * @see #toStringBuilder()
+     * 
+     * @return                                  El mismo objeto que se pasa por parámetro
      */
-    public void setContenido(String contenido) {
+    public StringBuilder setContenido(StringBuilder contenido) {
         clearContenido();
         this.l_contenido.add(contenido);
+        
+        return contenido;
     }
 
 
     /**
-     * Establece el contenido encerrado entre la etiquetas de apertura y la de cierre.
-     * Es lo que va desde desde <tag> hasta </tag>.
+     * Añade contenido al tag, que será colocado entre la etiquetas de apertura y la de cierre.
+     *
+     * @param tag                               Contenido encerrado entre la etiquetas de apertura y la de cierre
+     * 
+     * @return                                  El mismo objeto que se pasa por parámetro
+     */
+    public Tag addContenido(Tag tag) {
+        this.l_contenido.add(tag);
+        return tag;
+    }
+    
+    
+    /**
+     * Añade contenido al tag, que será colocado entre la etiquetas de apertura y la de cierre.
      *
      * @param contenido                         Contenido encerrado entre la etiquetas de apertura y la de cierre
-     *
-     * @see #toStringBuilder()
+     * 
+     * @return                                  El mismo objeto que se pasa por parámetro
      */
-    public void setContenido(StringBuilder contenido) {
-        clearContenido();
+    public String addContenido(String contenido) {
         this.l_contenido.add(contenido);
+        return contenido;
+    }
+    
+    
+    /**
+     * Añade contenido al tag, que será colocado entre la etiquetas de apertura y la de cierre.
+     *
+     * @param contenido                         Contenido encerrado entre la etiquetas de apertura y la de cierre
+     * 
+     * @return                                  El mismo objeto que se pasa por parámetro
+     */
+    public StringBuilder addContenido(StringBuilder contenido) {
+        this.l_contenido.add(contenido);
+        return contenido;
     }
 
+    
+    
+    /**
+     * Añade contenido al tag, que será colocado entre la etiquetas de apertura y la de cierre.
+     * Esta función es un alias de addContenido(String).
+     * 
+     * @param contenido                         Contenido encerrado entre la etiquetas de apertura y la de cierre
+     * 
+     * @return                                  El mismo objeto que se pasa por parámetro
+     */
+    public String add(String contenido) {
+        return addContenido(contenido);
+    }
+    
+    
+    /**
+     * Añade contenido al tag, que será colocado entre la etiquetas de apertura y la de cierre.
+     * Esta función es un alias de addContenido(StringBuilder).
+     * 
+     * @param contenido                         Contenido encerrado entre la etiquetas de apertura y la de cierre
+     * 
+     * @return                                  El mismo objeto que se pasa por parámetro
+     */
+    public StringBuilder add(StringBuilder contenido) {
+        return addContenido(contenido);
+    }
 
-    /**
-     * Añade contenido encerrado entre la etiquetas de apertura y la de cierre.
-     * Es lo que va desde desde <tag> hasta </tag>.
-     *
-     * @param contenido                         Contenido encerrado entre la etiquetas de apertura y la de cierre
-     *
-     * @see #toStringBuilder()
-     */
-    public void addContenido(Tag contenido) {
-        this.l_contenido.add(contenido);
-    }
     
     
     /**
-     * Añade contenido encerrado entre la etiquetas de apertura y la de cierre.
-     * Es lo que va desde desde <tag> hasta </tag>.
+     * Añade contenido al tag, que será colocado entre la etiquetas de apertura y la de cierre.
+     * Esta función es un alias de addContenido(Tag).
      *
-     * @param contenido                         Contenido encerrado entre la etiquetas de apertura y la de cierre
-     *
-     * @see #toStringBuilder()
+     * @param tag                               Contenido encerrado entre la etiquetas de apertura y la de cierre
+     * 
+     * @return                                  El mismo objeto que se pasa por parámetro
      */
-    public void addContenido(String contenido) {
-        this.l_contenido.add(contenido);
+    public Tag add(Tag tag) {
+        return addContenido(tag);
     }
     
-    
-    /**
-     * Añade contenido encerrado entre la etiquetas de apertura y la de cierre.
-     * Es lo que va desde desde <tag> hasta </tag>.
-     *
-     * @param contenido                         Contenido encerrado entre la etiquetas de apertura y la de cierre
-     *
-     * @see #toStringBuilder()
-     */
-    public void addContenido(StringBuilder contenido) {
-        this.l_contenido.add(contenido);
-    }
     
     
     /**
@@ -439,11 +500,12 @@ public class Tag extends ListaAtributos {
                 s.append(s_contenido);
             }
         }
-        
 
         // Etiqueta de cierre
-        s.append(getEtiquetaCierre());
-        s.append(Comun.NL);
+        if (tiene_cierre) {
+            s.append(getEtiquetaCierre());
+            s.append(Comun.NL);
+        }
         
         return s;
     }

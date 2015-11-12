@@ -438,5 +438,60 @@ public class Numeros {
         String s_importe = importe.toString();
         return formatearImporte(s_importe, decimales);
     }
+
+
+
+    /**
+     * Convierte una cadena a un entero de modo que, si hay un error de conversión, retorna el valor 0.
+     *
+     * @param cadena                            Cadena que contiene el entero
+     * 
+     * @return                                  Entero
+     */
+    public static int toEntero(String cadena) {
+        int n = Cadenas.toEntero(cadena);
+        return n;
+    }
+     
+     
+    /**
+     * Convierte una cadena a un entero de modo que, si hay un error de conversión, retorna el valor predeterminado.
+     *
+     * @param cadena                            Cadena que contiene el entero
+     * @param valor_predeterminado              Valor a retornar en caso de error
+     *
+     * @return                                  Entero
+     */
+     public static int toEntero(String cadena, int valor_predeterminado) {
+        int n = Cadenas.toEntero(cadena, valor_predeterminado);
+        return n;
+    }
+
+
+    /**
+     * Convierte una cadena a un entero largo de modo que, si hay un error de conversión, retorna el valor 0.
+     *
+     * @param cadena                            Cadena que contiene el entero
+     * @return                                  Entero largo
+     */
+    public static long toLong(String cadena) {
+        long n = Cadenas.toLong(cadena);
+        return n;
+    }
+
+     
+    /**
+     * Convierte una cadena a un entero largo de modo que, si hay un error de conversión, retorna el valor predeterminado.
+     *
+     * @param cadena                            Cadena que contiene el entero
+     * @param valor_predeterminado              Valor a retornar en caso de error
+     *
+     * @return                                  Entero
+     */
+    public static long toLong(String cadena, long valor_predeterminado) {
+        long n = Cadenas.toLong(cadena, valor_predeterminado);
+        return n;
+    }
+    
 }
 

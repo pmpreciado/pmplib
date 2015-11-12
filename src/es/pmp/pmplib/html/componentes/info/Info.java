@@ -65,7 +65,7 @@ public class Info {
     public Info() {
         numero_columnas_info = NUMERO_COLUMNAS_INFO_PREDETERMINADO;
         l_elementos = new ArrayList();
-        estilo = EstiloInfo.getEstiloInfoAzul();
+        estilo = EstiloInfo.getEstiloPredeterminado();
         espacio_separacion_columnas = ESPACIO_SEPARACION_COLUMNAS;
         usar_linea_separacion_columnas = true;
     }

@@ -1246,26 +1246,6 @@ public class Cadenas {
 
 
     /**
-     * Convierte una cadena a un entero de modo que, si hay un error de conversión, retorna el valor 0.
-     *
-     * @param cadena                            Cadena que contiene el entero
-     * 
-     * @return                                  Entero
-     */
-     public static int toEntero(String cadena) {
-         int n;
-
-         try {
-             n = Integer.parseInt(cadena.trim());
-         } catch (Exception ex) {
-             n = 0;
-         }
-
-         return n;
-     }
-
-
-    /**
      * Convierte una cadena a un booleano, de acuerdo a estas condiciones:
      * 
      *      cadena = null           --> false
@@ -1279,24 +1259,41 @@ public class Cadenas {
      * 
      * @return                                  Booleano
      */
-     public static boolean toBoolean(String cadena) {
+    public static boolean toBoolean(String cadena) {
          
-         boolean b;
-         
-         int n;
-         try {
-             n = Integer.parseInt(cadena.trim());
-             if (n == 0 || n == -1) {
-                 return false;
-             }
+        int n;
+        try {
+            n = Integer.parseInt(cadena.trim());
+            if (n == 0 || n == -1) {
+                return false;
+            }
              
-             return true;
+            return true;
              
-         } catch (Exception ex) {
-             return false;
-         }
-     }
+        } catch (Exception ex) {
+            return false;
+        }
+    }
+
      
+    /**
+     * Convierte una cadena a un entero de modo que, si hay un error de conversión, retorna el valor 0.
+     *
+     * @param cadena                            Cadena que contiene el entero
+     * 
+     * @return                                  Entero
+     */
+    public static int toEntero(String cadena) {
+        int n;
+
+        try {
+            n = Integer.parseInt(cadena.trim());
+        } catch (Exception ex) {
+            n = 0;
+        }
+
+        return n;
+    }
      
      
     /**
@@ -1308,16 +1305,16 @@ public class Cadenas {
      * @return                                  Entero
      */
      public static int toEntero(String cadena, int valor_predeterminado) {
-         int n;
+        int n;
 
-         try {
-             n = Integer.parseInt(cadena.trim());
-         } catch (Exception ex) {
-             n = valor_predeterminado;
-         }
+        try {
+            n = Integer.parseInt(cadena.trim());
+        } catch (Exception ex) {
+            n = valor_predeterminado;
+        }
 
-         return n;
-     }
+        return n;
+    }
 
 
     /**
@@ -1326,17 +1323,17 @@ public class Cadenas {
      * @param cadena                            Cadena que contiene el entero
      * @return                                  Entero largo
      */
-     public static long toLong(String cadena) {
-         long n;
+    public static long toLong(String cadena) {
+        long n;
 
-         try {
-             n = Long.parseLong(cadena);
-         } catch (NumberFormatException ex) {
-             n = 0;
-         }
+        try {
+            n = Long.parseLong(cadena);
+        } catch (NumberFormatException ex) {
+            n = 0;
+        }
 
-         return n;
-     }
+        return n;
+    }
 
      
     /**
@@ -1347,17 +1344,17 @@ public class Cadenas {
      *
      * @return                                  Entero
      */
-     public static long toLong(String cadena, long valor_predeterminado) {
-         long n;
+    public static long toLong(String cadena, long valor_predeterminado) {
+        long n;
 
-         try {
-             n = Long.parseLong(cadena);
-         } catch (Exception ex) {
-             n = valor_predeterminado;
-         }
+        try {
+            n = Long.parseLong(cadena);
+        } catch (Exception ex) {
+            n = valor_predeterminado;
+        }
 
-         return n;
-     }
+        return n;
+    }
      
 
     /**
@@ -1366,17 +1363,17 @@ public class Cadenas {
      * @param cadena                            Cadena que contiene el double
      * @return                                  Double
      */
-     public static double toDouble(String cadena) {
-         double n;
+    public static double toDouble(String cadena) {
+        double n;
 
-         try {
-             n = Double.parseDouble(cadena);
-         } catch (NumberFormatException ex) {
-             n = 0;
-         }
+        try {
+            n = Double.parseDouble(cadena);
+        } catch (NumberFormatException ex) {
+            n = 0;
+        }
 
-         return n;
-     }
+        return n;
+    }
 
 
     /**

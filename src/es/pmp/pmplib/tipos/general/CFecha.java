@@ -1344,10 +1344,14 @@ public class CFecha implements Cloneable, Comparable <CFecha> {
      *     <li> FF_AAAAMM
      *   </ul>
      *
+     * @param separador                         Carácter usado para separar los elementos de la fecha
+     * 
      * @return                                  String con la fecha actual AAAAMMDD
      */
-    public String toString(int formato) {
-        if (!fecha_definida) return "";
+    public String toString(int formato, String separador) {
+        if (!fecha_definida) {
+            return "";
+        }
 
         StringBuilder s = new StringBuilder("");
         String s_año = Integer.toString(año);
@@ -1409,6 +1413,30 @@ public class CFecha implements Cloneable, Comparable <CFecha> {
         }
 
         return s.toString();
+    }
+    
+    
+
+    /**
+     * Retorna la fecha en un String con el formato especificado.
+     * Si la fecha no está definida, retorna "".
+     *
+     * @param formato                           Formato para expresar la fecha
+     *   <ul>
+     *     <li> FF_AAAAMMDD
+     *     <li> FF_DDMMAAAA
+     *     <li> FF_AAMMDD
+     *     <li> FF_DDMMAA
+     *     <li> FF_DD_MM_AAAA
+     *     <li> FF_AAAA_MM_DD
+     *     <li> FF_AAAAMM
+     *   </ul>
+     *
+     * @return                                  String con la fecha actual AAAAMMDD
+     */
+    public String toString(int formato) {
+        String s_fecha = toString(formato, separador);
+        return s_fecha;
     }
 
 

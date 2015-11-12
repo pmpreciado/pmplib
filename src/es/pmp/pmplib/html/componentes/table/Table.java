@@ -74,7 +74,7 @@ public class Table extends ListaAtributos {
         set_separaciones_verticales     = new HashSet <> ();
         set_columnas_resaltar           = new HashSet <> ();
         set_columnas_ocultar            = new HashSet <> ();
-        estilo = EstiloTabla.getEstiloTablaAzul();
+        estilo = EstiloTabla.getEstiloPredeterminado();
     }
     
     
