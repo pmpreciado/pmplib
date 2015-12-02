@@ -25,19 +25,20 @@ import org.apache.logging.log4j.Logger;
  * 
  * @author pmpreciado
  */
-public abstract class Do extends HttpServlet {
+public class Do extends HttpServlet {
 
     final String SERVLET_CLASS_BASE = this.getClass().getPackage().getName();
+    final String SERVLET_SUFIJO = ".do";
     
     
     /**
-     * Obtiene el nombre de la clase a llamar a partir de la ruta de la petición web.
+     * Obtiene el nombre de la clase a llamar a partir de la ruta de la petición web en formato /SrvXXX.
      * 
      * @param request                           Request
      * 
      * @return                                  Nombre de la clase, por ejemplo, es.pmp.pmplib.servlets.do.SrvTest
      */
-    private String getClaseFromRuta(HttpServletRequest request)  {
+    private String getClaseFromRuta1(HttpServletRequest request) {
         String path_info = request.getPathInfo();     // Ejemplo: /SrvTest
         String ruta_relativa = path_info;
         
@@ -54,6 +55,28 @@ public abstract class Do extends HttpServlet {
     
     
     /**
+     * Obtiene el nombre de la clase a llamar a partir de la ruta de la petición web en formato .SrvXXX.do
+     * 
+     * @param request                           Request
+     * @param sufijo                            Sufijo de las peticiones, por ejemplo, ".do"
+     * 
+     * @return                                  Nombre de la clase, por ejemplo, es.pmp.pmplib.servlets.do.SrvTest
+     */
+    private String getClaseFromRuta2(HttpServletRequest request, String sufijo) {
+        
+        String uri = request.getRequestURI();           // Ejemplo /miweb/SrvInicio.do
+        int pos_primero = uri.lastIndexOf("/");
+        int pos_ultimo = uri.lastIndexOf(sufijo);
+        
+        String ruta_relativa = Cadenas.miSubstring(uri, pos_primero + 1, pos_ultimo - 1);
+        
+        String nombre_clase = SERVLET_CLASS_BASE + "." + ruta_relativa;
+        return nombre_clase;
+    }
+    
+    
+    
+    /**
      * Obtiene la clase a invocar.
      * 
      * @param request                           Servlet request
@@ -67,7 +90,10 @@ public abstract class Do extends HttpServlet {
         String nombre_clase;
         Class clase = null;
         try {
-            nombre_clase = getClaseFromRuta(request);
+            // Usar uno de estos dos según el patrón del servlet
+            nombre_clase = getClaseFromRuta1(request);
+            nombre_clase = getClaseFromRuta2(request, SERVLET_SUFIJO);
+            
             clase = Class.forName(nombre_clase);
         } catch (Exception ex) {
             String mensaje = Errores.getMensaje(Errores.ERR_AP_PAGINA_NO_EXISTENTE);
