@@ -14,7 +14,5 @@ package es.pmp.pmplib;
 public class Comun {
     
     /** Nueva línea */
-    public static final String NL = System.getProperty("line.separator");
-
-    
+    public static final String NL = System.getProperty("line.separator");   
 }

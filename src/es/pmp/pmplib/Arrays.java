@@ -6,8 +6,13 @@
 
 package es.pmp.pmplib;
 
+import java.beans.XMLDecoder;
+import java.beans.XMLEncoder;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Funciones de propósito general relacionadas con arrays y colecciones.
@@ -657,5 +662,44 @@ public class Arrays {
         }
     }
 
+
+    /**
+     * Transforma un Map en una cadena.
+     * La transformación realizada permite posteriormente generar el Map a partir de la cadena.
+     * Para la transformación, se hace uso de la clase XMLEncoder de Java.
+     * 
+     * @param map                               Map a transformar a un String
+     * 
+     * @return                                  Cadena que representa al Map de entrada
+     * 
+     * @see string2Map(String)
+     */
+    public static String map2String(Map <String, String> map) {
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();  
+        XMLEncoder xml_encoder = new XMLEncoder(bos);  
+        xml_encoder.writeObject(map);  
+        xml_encoder.flush();  
+
+        String s_map = bos.toString();
+        return s_map;
+    }
     
+    
+    /**
+     * Transforma una cadena que es representación de un Map, en el objeto Map propiamente dicho.
+     * Para la transformación, se hace uso de la clase XMLDecoder de Java.
+     * 
+     * @param s_map                             Cadena que representa al Map
+     * 
+     * @return                                  Objeto Map
+     * 
+     * @see map2String(Map <String, String>)
+     */
+    public static Map <String, String> string2Map(String s_map) {
+        
+        XMLDecoder xml_decoder = new XMLDecoder(new ByteArrayInputStream(s_map.getBytes()));  
+        Map <String, String> map = (Map <String, String>) xml_decoder.readObject();  
+        
+        return map;
+    }
 }

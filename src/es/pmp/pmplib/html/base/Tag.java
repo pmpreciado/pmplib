@@ -91,6 +91,32 @@ public class Tag extends ListaAtributos {
     
     
     /**
+     * Crea la instancia de la clase, que es inicializada a partir del Tag suministrado.
+     * 
+     * @param tag                               Tag a partir del cual se inicializará esta instancia
+     */
+    public Tag(Tag tag) {
+        this();
+        this.nombre = tag.nombre;
+        this.tiene_cierre = tag.tiene_cierre;
+        
+        for (Object contenido : tag.l_contenido) {
+            
+            if (contenido instanceof String) {
+                this.add((String) contenido);
+            } else if (contenido instanceof StringBuilder) {
+                this.add((StringBuilder) contenido);
+            } else if (contenido instanceof Tag) {
+                
+                Tag tag_contenido = (Tag) contenido;
+                Tag tag_contenido_clone = new Tag(tag_contenido);
+                this.add((Tag) tag_contenido_clone);
+            }
+        }
+    }
+    
+    
+    /**
      * Establece el nombre de la etiqueta.
      *
      * @param nombre                            Nombre de la etiqueta
