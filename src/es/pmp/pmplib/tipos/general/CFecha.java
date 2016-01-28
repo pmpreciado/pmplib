@@ -51,13 +51,25 @@ public class CFecha implements Cloneable, Comparable <CFecha> {
     /** Formato de la fecha MMAAAA */
     public static final int FF_MMAAAA       = 6;
 
+    /** Formato de la fecha AAMM */
+    public static final int FF_AAMM         = 7;
+    
+    /** Formato de la fecha MMAA */
+    public static final int FF_MMAA         = 8;
 
+    /** Formato de la fecha AA_MM */
+    public static final int FF_AA_MM        = 9;
+    
+    /** Formato de la fecha MM_AA */
+    public static final int FF_MM_AA        = 10;
+    
     /** Formato de la fecha DD.MM.AAAA (da igual el separador, que este caso es el punto) */
-    public static final int FF_DD_MM_AAAA   = 7;
+    public static final int FF_DD_MM_AAAA   = 11;
 
     /** Formato de la fecha AAAA.MM.DD (da igual el separador, que este caso es el punto) */
-    public static final int FF_AAAA_MM_DD   = 8;
+    public static final int FF_AAAA_MM_DD   = 12;
 
+    
     
     /** Días de la semana */
     public static final int LUNES           = 1;
@@ -1342,6 +1354,10 @@ public class CFecha implements Cloneable, Comparable <CFecha> {
      *     <li> FF_DD_MM_AAAA
      *     <li> FF_AAAA_MM_DD
      *     <li> FF_AAAAMM
+     *     <li> FF_AAMM
+     *     <li> FF_MMAA
+     *     <li> FF_AA_MM
+     *     <li> FF_MM_AA
      *   </ul>
      *
      * @param separador                         Carácter usado para separar los elementos de la fecha
@@ -1410,6 +1426,28 @@ public class CFecha implements Cloneable, Comparable <CFecha> {
                 s.append(s_año);
                 s.append(s_mes);
                 break;
+                
+            case FF_AAMM:
+                s.append(s_año_2);
+                s.append(s_mes);
+                break;
+                
+            case FF_MMAA:
+                s.append(s_mes);
+                s.append(s_año_2);
+                break;
+                
+            case FF_AA_MM:
+                s.append(s_año_2);
+                s.append(separador);
+                s.append(s_mes);
+                break;
+                
+            case FF_MM_AA:
+                s.append(s_mes);
+                s.append(separador);
+                s.append(s_año_2);
+                break;
         }
 
         return s.toString();
@@ -1430,6 +1468,10 @@ public class CFecha implements Cloneable, Comparable <CFecha> {
      *     <li> FF_DD_MM_AAAA
      *     <li> FF_AAAA_MM_DD
      *     <li> FF_AAAAMM
+     *     <li> FF_AAMM
+     *     <li> FF_MMAA
+     *     <li> FF_AA_MM
+     *     <li> FF_MM_AA
      *   </ul>
      *
      * @return                                  String con la fecha actual AAAAMMDD
