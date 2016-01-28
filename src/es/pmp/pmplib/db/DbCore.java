@@ -351,7 +351,6 @@ public class DbCore {
     {
         checkConexion(conexion);
         
-        Logger logger = LogManager.getRootLogger();
         String consulta = sustituirParametrosEnConsulta(sql, parametros);
         
         PreparedStatement pst = null;
