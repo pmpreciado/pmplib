@@ -12,6 +12,7 @@ import es.pmp.pmplib.tipos.general.CDecimal;
 import es.pmp.pmplib.tipos.general.CFecha;
 import es.pmp.pmplib.tipos.general.CHora;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,25 +32,31 @@ public class Parametros {
             
     
     /** Tipo de parámetro entero */
-    public static final int TP_INT       = 1;
+    public static final int TP_INT          = 1;
     
     /** Tipo de parámetro entero */
-    public static final int TP_LONG      = 2;
+    public static final int TP_LONG         = 2;
     
+    /** Tipo de parámetro float */
+    public static final int TP_FLOAT        = 3;
+
     /** Tipo de parámetro double */
-    public static final int TP_DOUBLE    = 3;
+    public static final int TP_DOUBLE       = 4;
 
     /** Tipo de parámetro boolean */
-    public static final int TP_BOOLEAN   = 4;
+    public static final int TP_BOOLEAN      = 5;
 
     /** Tipo de parámetro cadena */
-    public static final int TP_STRING    = 10;
+    public static final int TP_STRING       = 10;
+
+    /** Tipo de parámetro BigDecimal */
+    public static final int TP_BIGDECIMAL   = 11;
 
     /** Tipo de parámetro blob */
-    public static final int TP_BLOB      = 11;
+    public static final int TP_BLOB         = 12;
 
     /** Tipo de parámetro bytes */
-    public static final int TP_BYTES     = 12;
+    public static final int TP_BYTES        = 13;
     
     
     
@@ -90,6 +97,19 @@ public class Parametros {
     
     
     /**
+     * Añade un parámetro de tipo floag.
+     *
+     * @param v                                 Parámetro
+     */
+    public void add(float v) {
+        ClaseParametro param = new ClaseParametro();
+        param.tipo = TP_FLOAT;
+        param.valor = v;
+        l_parametros.add(param);
+    }
+    
+    
+    /**
      * Añade un parámetro de tipo double.
      *
      * @param v                                 Parámetro
@@ -110,6 +130,19 @@ public class Parametros {
     public void add(String v) {
         ClaseParametro param = new ClaseParametro();
         param.tipo = TP_STRING;
+        param.valor = v;
+        l_parametros.add(param);
+    }
+    
+    
+    /**
+     * Añade un parámetro de tipo BigDecimal.
+     *
+     * @param v                                 Parámetro
+     */
+    public void add(BigDecimal v) {
+        ClaseParametro param = new ClaseParametro();
+        param.tipo = TP_BIGDECIMAL;
         param.valor = v;
         l_parametros.add(param);
     }
@@ -194,6 +227,48 @@ public class Parametros {
     
     
     /**
+     * Añade varios parámetros suministrados en una lista.
+     * Los parámetros pueden ser de distintas clases.
+     *
+     * @param l_v                               Lista con los parámetros a añadir
+     */
+    public void add(List <Object> l_v) {
+        
+        if (l_v == null) {
+            return;
+        }
+        
+        for (Object v : l_v) {
+            if (v instanceof Integer) {
+                add((int) v);
+            } else if (v instanceof Long) {
+                add((long) v);
+            } else if (v instanceof Float) {
+                add((float) v);
+            } else if (v instanceof Double) {
+                add((double) v);
+            } else if (v instanceof Boolean) {
+                add((boolean) v);
+            } else if (v instanceof String) {
+                add((String) v);
+            } else if (v instanceof BigDecimal) {
+                add((BigDecimal) v);
+            } else if (v instanceof CFecha) {
+                add((CFecha) v);
+            } else if (v instanceof CHora) {
+                add((CHora) v);
+            } else if (v instanceof CDecimal) {
+                add((CDecimal) v);
+            } else if (v instanceof byte []) {
+                add((byte []) v);
+            }
+        }
+        
+    }
+    
+    
+    
+    /**
      * Retorna el número  de parámetros que hay almacenados.
      *
      * @return                                  Número de parámetros
@@ -226,25 +301,34 @@ public class Parametros {
         
         switch (param.tipo) {
             case Parametros.TP_INT:
-                int int_valor = (Integer) param.valor;
+                int int_valor = (int) param.valor;
                 return Integer.toString(int_valor);
 
             case Parametros.TP_LONG:
-                long long_valor = (Long) param.valor;
+                long long_valor = (long) param.valor;
                 return Long.toString(long_valor);
 
+            case Parametros.TP_FLOAT:
+                double float_ = (float) param.valor;
+                return Double.toString(float_);
+                
             case Parametros.TP_DOUBLE:
-                double double_valor = (Double) param.valor;
+                double double_valor = (double) param.valor;
                 return Double.toString(double_valor);
                 
             case Parametros.TP_BOOLEAN:
-                boolean boolean_valor = (Boolean) param.valor;
+                boolean boolean_valor = (boolean) param.valor;
                 if (boolean_valor) return "1";
                 else return "0";
 
             case Parametros.TP_STRING:
                 String string_valor = (String) param.valor;
                 return string_valor;
+                
+            case Parametros.TP_BIGDECIMAL:
+                BigDecimal bd_valor = (BigDecimal) param.valor;
+                String bd_valor_s = bd_valor.toString();
+                return bd_valor_s;
 
             case Parametros.TP_BLOB:
                 String blob = "<blob " + Long.toString(param.long_blob) + " bytes>";

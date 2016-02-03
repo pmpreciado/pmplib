@@ -284,6 +284,8 @@ public class DbCore {
     
     /**
      * Cierra el objeto de tipo "ResultSet" suministrado.
+     * Si el "ResultSet" tuviera un "Statement" asociado, también lo cierra.
+     * 
      * En caso de excepción al cerrar, la registra.
      * 
      * @param rs                                ResultSet a cerrar. Si es 'null', no hace nada
@@ -296,7 +298,18 @@ public class DbCore {
         }
         
         try {
-            rs.close();
+            Statement st = rs.getStatement();
+            
+            try {
+                cerrarStatement(st);
+            } catch (Exception ex) {
+                String mensaje = "Error al cerrar el statement asociado al resultset";
+                Logger logger = LogManager.getRootLogger();
+                logger.error(mensaje, ex);
+            } finally {
+                rs.close();
+            }
+            
         } catch (SQLException sqlex) {
             String mensaje = Errores.getMensaje(Errores.ERR_BD_CERRAR_RESULTADO);
             Exception ex = new Exception(mensaje, sqlex);
@@ -395,7 +408,7 @@ public class DbCore {
     
     /**
      * Ejecuta sentencia SQL de actualización (INSERT, UPDATE) de forma parametrizada.
-     * El Statement utilizado es cerrado al finalizar esta función.
+     * El Statement utilizado es cerrado al finalizar esta función. La consulta permanece abierta.
      * 
      * @param conexion                          Conexión con la base de datos
      * @param sql                               Consulta SQL con parámetros ('?')
@@ -438,7 +451,7 @@ public class DbCore {
     
     /**
      * Ejecuta una consulta SQL de actualización (INSERT, UPDATE, DELETE).
-     * El Statement utilizado es cerrado al finalizar esta función.
+     * El Statement utilizado es cerrado al finalizar esta función. La consulta permanece abierta.
      * 
      * @param conexion                          Conexión con la base de datos
      * @param sql                               Consulta SQL a ejecutar
@@ -448,7 +461,7 @@ public class DbCore {
      * @throws Exception                        Conexión no establecida
      *                                          Error al crear la consulta
      */
-    public int consultaActualizacion(Connection conexion, String sql) throws Exception
+    public static int consultaActualizacion(Connection conexion, String sql) throws Exception
     {
         Parametros parametros = null;
         return consultaActualizacion(conexion, sql, parametros);
