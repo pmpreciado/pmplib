@@ -20,13 +20,22 @@ public interface ServletInterface {
 
 
     /**
-     * Obtiene el "content type" a utilizar para el envío de la página generada.
-     *
-     * @return                                  "Content type" a utilizar (CONTENT_TYPE_xxx)
-     *                                          Si es 'null', no se utilizará ninguno
+     * Establece el tipo de contenido que se va a servir.
+     * 
+     * @param content_type                      Tipo de contenido que se va a servir
+     *                                          Ejemplos:
+     *                                              text/html;charset=UTF-8
+     *                                              image/jpeg
+     */
+    public void setContentType(String content_type);
+    
+    /**
+     * Obtiene el tipo de contenido que se va a servir.
+     * 
+     * @return                                  Tipo de contenido que se va a servir
      */
     public String getContentType();
-
+    
     /**
      * Inicializa la clase.
      * 

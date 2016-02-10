@@ -38,12 +38,12 @@ public abstract class ServletBase implements ServletInterface {
                                    "\"http://www.w3.org/TR/html4/loose.dtd\">\n";
 
     /** Algunos Content-Type comunes */
-    protected static final String CONTENT_TYPE_TEXT_HTML_UTF_8              = "text/html;charset=UTF-8";
-    protected static final String CONTENT_TYPE_TEXT_HTML_ISO_8859_1         = "text/html;charset=ISO-8859-1";
-    protected static final String CONTENT_TYPE_TEXT_HTML_ISO_8859_15        = "text/html;charset=ISO-8859-15";
-    protected static final String CONTENT_TYPE_IMAGE_JPEG                   = "image/jpeg;charset=ISO-8859-1";
-    protected static final String CONTENT_TYPE_PDF                          = "application/pdf;charset=ISO-8859-1";
-    protected static final String CONTENT_TYPE_PREDETERMINADO               = CONTENT_TYPE_TEXT_HTML_UTF_8;
+    protected static final String CONTENT_TYPE_HTML_UTF_8               = "text/html;charset=UTF-8";
+    protected static final String CONTENT_TYPE_HTML_ISO_8859_1          = "text/html;charset=ISO-8859-1";
+    protected static final String CONTENT_TYPE_HTML_ISO_8859_15         = "text/html;charset=ISO-8859-15";
+    protected static final String CONTENT_TYPE_XML_UTF_8                = "application/xml;charset=UTF-8";
+    
+    protected static final String CONTENT_TYPE_PREDETERMINADO           = CONTENT_TYPE_HTML_UTF_8;
 
     /**
      * Tipos de salida de la página.
@@ -67,10 +67,6 @@ public abstract class ServletBase implements ServletInterface {
     /** Contenido de la página para las salidas de tipo texto/html */
     private StringBuilder contenido_texto_html;
 
-    /** Contenido de la página para las salidas de tipo binario */
-    private byte [] contenido_binario;
-
-    
     
     /** 
      * Crea la instancia de la clase.
@@ -78,28 +74,25 @@ public abstract class ServletBase implements ServletInterface {
     public ServletBase() {
         content_type = CONTENT_TYPE_PREDETERMINADO;
         tipo_salida = TIPO_SALIDA_PREDETERMINADO;
-        
         contenido_texto_html = new StringBuilder();
-        contenido_binario = null;
     }
     
     
     /**
-     * Establece el "content type" a utilizar en la página generada.
-     * Si se desea, se puede utilizar alguna de las constantes ServletBase.CONTENT_TYPE_xxx
-     *
-     * @param content_type                      "Content type" a utilizar
+     * Establece el tipo de contenido que se va a servir.
+     * 
+     * @param content_type                      Tipo de contenido que se va a servir (ServletBase.CONTENT_TYPE_xxx u otro)
      */
+    @Override
     public void setContentType(String content_type) {
         this.content_type = content_type;
     }
     
     
-    
     /**
-     * Obtiene el "content type" a utilizar en la página generada.
-     *
-     * @return                                  "Content type" a utilizar
+     * Obtiene el tipo de contenido que se va a servir.
+     * 
+     * @return                                  Tipo de contenido que se va a servir (ServletBase.CONTENT_TYPE_xxx u otro)
      */
     @Override
     public String getContentType() {
@@ -190,7 +183,6 @@ public abstract class ServletBase implements ServletInterface {
      */
     protected void clearContenido() {
         contenido_texto_html = new StringBuilder();
-        contenido_binario = null;
     }
     
     
@@ -201,16 +193,6 @@ public abstract class ServletBase implements ServletInterface {
      */
     protected StringBuilder getContenido() {
         return contenido_texto_html;
-    }
-    
-    
-    /**
-     * Obtiene el contenido de tipo binario que haya sido añadido a la salida del servlet.
-     * 
-     * @return                                  Contenido de tipo binario
-     */
-    protected byte [] getContenidoBinario() {
-        return contenido_binario;
     }
     
     
@@ -266,12 +248,6 @@ public abstract class ServletBase implements ServletInterface {
      */
     @Override
     public void preLaunch() throws Throwable {
-//        try {
-//
-//        } catch (Exception ex) {
-//            ServletException sex = new ServletException(ex);
-//            throw sex;
-//        }
     }
 
 
@@ -294,16 +270,21 @@ public abstract class ServletBase implements ServletInterface {
         }
     }
     
-
+    
     /**
-     * Obtiene el contenido_texto_html de tipo texto/html a retornar por el servlet y lo vuelca a la salida.
-     * Tras la operación, cierra el "stream" de salida.
+     * Obtiene el contenido_texto_html a retornar, y lo vuelca a la salida del servlet.
+     * El contenido_texto_html puede ser texto/html o binario.
+     * Tras volcar el contenido_texto_html, cierra el "stream" de salida.
      * 
      * @throws Exception                        Error al enviar la salida de la página
      */
-    private void outputTextoHtml() throws Exception {
+    @Override
+    public void output() throws Exception {
+        if (content_type != null) {
+            response.setContentType(content_type);
+        }
+        
         PrintWriter out = null;
-
         try {
             out = response.getWriter();
             if (contenido_texto_html != null) {
@@ -315,56 +296,6 @@ public abstract class ServletBase implements ServletInterface {
         }
 
         out.close();
-    }
-    
-    
-    /**
-     * Obtiene el contenido_texto_html binario a retornar por el servlet y lo vuelca a la salida.
-     * Tras la operación, cierra el "stream" de salida.
-     * 
-     * @throws Exception                        Error al enviar la salida de la página
-     *                                          Error al cerrar la salida de la página
-     */
-    private void outputBinario() throws Exception {
-        
-        ServletOutputStream sos = null;
-        try {
-            sos = response.getOutputStream();
-            if (contenido_binario != null) {
-                sos.write(contenido_binario);
-            }
-        } catch (IOException ioex) {
-            Exception ex = new Exception(Errores.getMensaje(Errores.ERR_WEBAPP_ENVIAR_SALIDA_PAGINA), ioex);
-            throw ex;
-        }
-
-        if (sos != null) {
-            try {
-                sos.close();
-            } catch (IOException ioex) {
-                Exception ex = new Exception(Errores.getMensaje(Errores.ERR_WEBAPP_CERRAR_SALIDA_PAGINA), ioex);
-                throw ex;
-            }
-        }
-    }
-    
-    
-    /**
-     * Obtiene el contenido_texto_html a retornar, y lo vuelca a la salida del servlet.
-     * El contenido_texto_html puede ser texto/html o binario.
-     * Tras volcar el contenido_texto_html, cierra el "stream" de salida.
-     * 
-     * @throws Exception                        Error al enviar la salida de la página
-     */
-    @Override
-    public void output() throws Exception {
-        response.setContentType(content_type);
-        
-        if (tipo_salida == TIPO_SALIDA_TEXTO_HTML) {
-            outputTextoHtml();
-        } else if (tipo_salida == TIPO_SALIDA_BINARIO) {
-            outputBinario();
-        }
     }
     
     
