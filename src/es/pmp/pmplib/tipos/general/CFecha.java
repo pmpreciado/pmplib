@@ -29,8 +29,12 @@ public class CFecha implements Cloneable, Comparable <CFecha> {
     private static final int AÑO_LIMITE_SIGLO = 29;
     
     
+    /** Carácteres separadores comunes */
+    public static final String SEPARADOR_PUNTO = ".";
+    public static final String SEPARADOR_BARRA = "/";
+
     /** Carácter separador predeterminado para la fecha */
-    public static final String SEPARADOR_FECHA = ".";
+    public static final String SEPARADOR_FECHA = SEPARADOR_PUNTO;
 
 
     /** Formato de la fecha AAAAMMDD */
@@ -470,70 +474,6 @@ public class CFecha implements Cloneable, Comparable <CFecha> {
         int n_fecha = fecha.getFecha();
         setFecha(n_fecha);
     }
-
-
-//    /**
-//     * Establece la fecha.
-//     * @param fecha_original                Fecha original, antes de cualquier transformación.
-//     *                                      Es la que se mostrará en caso de error
-//     * @param fecha                         Fecha en formato AAAAMMDD
-//     * @param formato                       Formato utilizado para expresar la fecha
-//     *   <ul>
-//     *     <li> FF_AAAAMMDD
-//     *     <li> FF_DDMMAAAA
-//     *     <li> FF_AAMMDD
-//     *     <li> FF_DDMMAA
-//     *   </ul>
-//     */
-//    protected void setFecha(String fecha_original, int fecha, int formato) {
-//
-//        if (fecha == 0 || fecha == Comun.NO_DEFINIDO) {
-//            fecha_definida = false;
-//            return;
-//        }
-//
-//        int año = Comun.NO_DEFINIDO;
-//        int mes = Comun.NO_DEFINIDO;
-//        int dia = Comun.NO_DEFINIDO;
-//
-//        switch (formato) {
-//            case FF_AAAAMMDD:
-//                año = fecha / 10000;
-//                mes = (fecha / 100) % 100;
-//                dia = fecha % 100;
-//                break;
-//
-//            case FF_DDMMAAAA:
-//                año = fecha % 10000;
-//                mes = (fecha / 10000) % 100;
-//                dia = fecha / 1000000;
-//                break;
-//
-//            case FF_AAMMDD:
-//                año = fecha / 100;
-//                mes = (fecha / 100) % 100;
-//                dia = fecha % 100;
-//                break;
-//
-//            case FF_DDMMAA:
-//                año = fecha % 100;
-//                mes = (fecha / 100) % 100;
-//                dia = fecha / 10000;
-//                break;
-//        }
-//
-//        boolean fecha_valida = esFechaValida(dia, mes, año);
-//        if (!fecha_valida) {
-//            desc_error = "La fecha '" + fecha_original + "' es incorrecta o inexistente";
-//            return;
-//        }
-//
-//        this.dia = dia;
-//        this.mes = mes;
-//        this.año = año;
-//
-//        fecha_definida = true;
-//    }
 
 
     /**
@@ -1371,7 +1311,7 @@ public class CFecha implements Cloneable, Comparable <CFecha> {
 
         StringBuilder s = new StringBuilder("");
         String s_año = Integer.toString(año);
-        String s_año_2 = Integer.toString(año / 100);
+        String s_año_2 = Integer.toString(año % 100);
         String s_mes = Integer.toString(mes);
         String s_dia = Integer.toString(dia);
 
