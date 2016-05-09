@@ -7,7 +7,6 @@
 package es.pmp.pmplib.html.componentes.menucool_image_slider;
 
 import es.pmp.pmplib.Comun;
-import es.pmp.pmplib.html.base.Tag;
 
 /**
  * Guarda las propiedades de una imagen de las que aparecen en la presentación.

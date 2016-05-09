@@ -46,10 +46,22 @@ public class MenuCoolImageSlider {
     /**
      * Incorpora una imagen al slider.
      * 
-     * @param image                             Imagen a incorporar
+     * @param imagen                            Imagen a incorporar
      */
-    public void addImagen(MenuCoolImage image) {
-        l_img.add(image);
+    public void addImagen(MenuCoolImage imagen) {
+        l_img.add(imagen);
+    }
+    
+    
+    /**
+     * Incorpora una imagen al slider.
+     * 
+     * @param src                               Origen de la imagen
+     * @param alt                               Título de la imagen (puede ser 'null')
+     */
+    public void addImagen(String src, String alt) {
+        MenuCoolImage imagen = new MenuCoolImage(src, alt);
+        addImagen(imagen);
     }
     
     
