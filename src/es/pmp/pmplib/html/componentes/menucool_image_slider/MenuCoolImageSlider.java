@@ -72,7 +72,7 @@ public class MenuCoolImageSlider {
      */
     public void addImagen(String src) {
         String alt = null;
-        addImagen(src);
+        addImagen(src, alt);
     }
     
     
