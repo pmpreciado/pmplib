@@ -66,6 +66,17 @@ public class MenuCoolImageSlider {
     
     
     /**
+     * Incorpora una imagen al slider.
+     * 
+     * @param src                               Origen de la imagen
+     */
+    public void addImagen(String src) {
+        String alt = null;
+        addImagen(src);
+    }
+    
+    
+    /**
      * Genera el código HTML que muestra el slider.
      * 
      * @return                                  Código HTML correspondiente a la imagen
