@@ -237,7 +237,7 @@ public class DbResult {
      * @throws SQLException                     Error al acceder a la base de datos
      * @throws Exception                        Error al cerrar el resultado
      */
-    public String [][] getRegistros(ResultSet rs) throws SQLException, Exception {
+    public static String [][] getRegistros(ResultSet rs) throws SQLException, Exception {
         
         boolean cerrar_rs = true;
         String [][] arr_registros = getRegistros(rs, cerrar_rs);

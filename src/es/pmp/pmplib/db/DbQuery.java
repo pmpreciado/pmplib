@@ -65,11 +65,35 @@ public class DbQuery {
     }
     
     
+    /**
+     * Comprueba si existe un registro que cumple las condiciones dadas dentro de la tabla.
+     * Tras hacer la consulta, se cierra el ResultSet.
+     * 
+     * @param conexion                          Conexión con la base de datos
+     * @param tabla                             Tabla en la que se va a buscar
+     * @param where                             Condiciones para la búsqueda
+     * @param parametros                        Parámetros a sustituir donde se encuentren los '?'
+     * 
+     * @return                                  'true' si existe el registro que cumple con las condiciones
+     *                                          'false' si no existe
+     * 
+     * @throws Exception                        Error al ejecutar la consulta
+     */
+    public static boolean existe(Connection conexion, String tabla, Where where, Parametros parametros) throws Exception
+    {
+        String sql = "SELECT COUNT(*) FROM " + tabla + " " + where.toString();
+        
+        ResultSet rs = DbCore.consulta(conexion, sql, parametros);
+        boolean cerrar_rs = true;
+        int valor = DbResult.getValor(rs, cerrar_rs);
+        boolean existe = valor > 0;
+        
+        return existe;
+    }
 
     
-    
     /**
-     * Comprueba si existe un registro en una tabla.
+     * Comprueba si existe un registro que cumple las condiciones dadas dentro de la tabla.
      * Tras hacer la consulta, se cierra el ResultSet.
      * 
      * @param conexion                          Conexión con la base de datos
@@ -83,13 +107,8 @@ public class DbQuery {
      */
     public static boolean existe(Connection conexion, String tabla, Where where) throws Exception
     {
-        String sql = "SELECT COUNT(*) FROM " + tabla + " " + where.toString();
-        
-        ResultSet rs = DbCore.consulta(conexion, sql);
-        boolean cerrar_rs = true;
-        int valor = DbResult.getValor(rs, cerrar_rs);
-        boolean existe = valor > 0;
-        
+        Parametros parametros = null;
+        boolean existe = existe(conexion, tabla, where, parametros);
         return existe;
     }
     
